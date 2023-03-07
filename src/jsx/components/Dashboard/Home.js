@@ -20,6 +20,7 @@ const Home = () => {
   const state = useSelector((state) => state);
   const { t } = useTranslation();
   const FetchData = async () => {
+    console.log(state.auth.auth, "state.auth.auth");
     setLoader(true);
     try {
       const response = await getDetailsforDashboard(

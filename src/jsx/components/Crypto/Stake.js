@@ -84,43 +84,6 @@ const Stake = () => {
       dispatch(Logout(navigate));
     };
 
-    let address = "";
-    let signer = {};
-    if (state.auth.isLoggedInFromMobile === "mobile") {
-      const RPC_URLS = {
-        1: "https://bsc-dataseed1.binance.org/",
-      };
-      const provider = new WalletConnectProvider({
-        rpc: {
-          1: RPC_URLS[1],
-        },
-        qrcode: true,
-      });
-      const accounts = await provider.enable();
-      const library = new Web3Provider(provider, "any");
-      signer = library.getSigner();
-      address = accounts[0];
-    } else {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const addresses = await provider.send("eth_requestAccounts", []);
-      address = addresses[0];
-    }
-    const staking = new ethers.Contract(
-      bitXStake.address,
-      bitXStake.abi,
-      signer
-    );
-    const bxg = new ethers.Contract(bitX.address, bitX.abi, signer);
-    if (address !== state.auth.auth.walletaddress) {
-      toast.error("Wrong account is selected, Logging Out", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-      setTimeout(logout, 1000);
-      return;
-    }
-
     setLoader(true);
     if (amountToStake <= 0) {
       toast.error("Please enter amount to stake", {
@@ -142,55 +105,30 @@ const Stake = () => {
         }
       }
       try {
-        const amount = ethers.utils.parseEther(amountToStake);
-        const amountApprove = ethers.utils.parseEther(
-          "100000000000000000000000000000000000000000"
-        );
-        const value = await bxg.allowance(
-          state.auth.auth.walletaddress,
-          staking.address
-        );
-        if (value < amount) {
-          await (await bxg.approve(staking.address, amountApprove)).wait();
-        }
-        const tx = await (await staking.stake(amount)).wait();
-        const stakedId = tx.events[2].args.stakedId;
-        if (tx.events) {
-          toast.success(tx.blockHash, {
+        const requestBody = {
+          wallet_address: state.auth.auth.walletaddress,
+          bxg: amountToStake,
+          blockhash: "tx.blockHash",
+          stake_id: "12",
+        };
+
+        const { data } = await axiosInstance
+          .post("/api/stake/", requestBody)
+          .catch((err) => {
+            toast.error(err.response.data, {
+              position: "top-center",
+              style: { minWidth: 180 },
+            });
+          });
+        if (data.stake_time) {
+          setTotalAmountStaked(data.bxg);
+          toast.success("Staked Successfully", {
             position: "top-center",
             style: { minWidth: 180 },
           });
-          const requestBody = {
-            wallet_address: state.auth.auth.walletaddress,
-            bxg: amountToStake,
-            blockhash: tx.blockHash,
-            stake_id: stakedId.toString(),
-          };
-
-          const { data } = await axiosInstance
-            .post("/api/stake/", requestBody)
-            .catch((err) => {
-              toast.error(err.response.data, {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            });
-          if (data.stake_time) {
-            setTotalAmountStaked(data.bxg);
-            toast.success("Staked Successfully", {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-            FetchData();
-          } else {
-            toast.error(data.message, {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-          }
+          FetchData();
         } else {
-          //console.log("Transaction Failed");
-          toast.error("Transaction Failed", {
+          toast.error(data.message, {
             position: "top-center",
             style: { minWidth: 180 },
           });
@@ -211,71 +149,36 @@ const Stake = () => {
     const logout = () => {
       dispatch(Logout(navigate));
     };
-    const addresses = await state.auth.provider.send("eth_requestAccounts", []);
-    const address = addresses[0];
-    console.log(state.auth.auth.walletaddress, address);
-    if (address !== state.auth.auth.walletaddress) {
-      toast.error("Wrong account is selected, Logging Out", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-      setTimeout(logout, 1000);
-      return;
-    }
-
-    if (bxgvalue1 <= 0) {
-      toast.error("Amount less then Zero", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-    } else {
-      try {
-        const amount = await ethers.utils.parseEther(bxgvalue1.toString());
-        const stakingId = await ethers.utils.parseEther(stakingID.toString());
-        const tx = await (
-          await staking.withdraw(amount, stakingID.toString())
-        ).wait(); //  replace this value
-        if (tx.events) {
-          toast.success(tx.blockHash, {
+    try {
+      const requestBody = {
+        wallet_address: state.auth.auth.walletaddress,
+        bxg: bxgvalue1,
+        stake_id: stakingID.toString(),
+        blockhash: "tx.blockHash",
+        type: "claim",
+      };
+      const { data } = await axiosInstance
+        .put("/api/stake/" + id, requestBody)
+        .catch((err) => {
+          toast.error(err.response.data, {
             position: "top-center",
             style: { minWidth: 180 },
           });
-          const requestBody = {
-            wallet_address: state.auth.auth.walletaddress,
-            bxg: bxgvalue1,
-            stake_id: stakingID.toString(),
-            blockhash: tx.blockHash,
-            type: "claim",
-          };
-          const { data } = await axiosInstance
-            .put("/api/stake/" + id, requestBody)
-            .catch((err) => {
-              toast.error(err.response.data, {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            });
-          if (data.stake_time) {
-            //setstartTime(new Date());
-            setTotalAmountStaked(data.bxg);
-            toast.success("Claimed Successfully", {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-            FetchData();
-          }
-        } else {
-          toast.error("Transaction Failed", {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
-        }
-      } catch (error) {
-        toast.error(error.reason, {
+        });
+      if (data.stake_time) {
+        //setstartTime(new Date());
+        setTotalAmountStaked(data.bxg);
+        toast.success("Claimed Successfully", {
           position: "top-center",
           style: { minWidth: 180 },
         });
+        FetchData();
       }
+    } catch (error) {
+      toast.error("Transaction Failed", {
+        position: "top-center",
+        style: { minWidth: 180 },
+      });
     }
     setLoader(false);
   };

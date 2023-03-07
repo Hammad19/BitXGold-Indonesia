@@ -69,40 +69,6 @@ const Sell = () => {
     const logout = () => {
       dispatch(Logout(navigate));
     };
-
-    let address = "";
-    let signer = {};
-    if (state.auth.isLoggedInFromMobile === "mobile") {
-      const RPC_URLS = {
-        1: "https://bsc-dataseed1.binance.org/",
-      };
-      const provider = new WalletConnectProvider({
-        rpc: {
-          1: RPC_URLS[1],
-        },
-        qrcode: true,
-      });
-      const accounts = await provider.enable();
-      const library = new Web3Provider(provider, "any");
-      signer = library.getSigner();
-      address = accounts[0];
-    } else {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const addresses = await provider.send("eth_requestAccounts", []);
-      address = addresses[0];
-    }
-
-    if (address !== state.auth.auth.walletaddress) {
-      toast.error("Wrong account is selected, Logging Out", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-      setTimeout(logout, 1000);
-      return;
-    }
-    const bitXGold = new ethers.Contract(bitX.address, bitX.abi, signer);
-    setLoader(true);
     if (Usd === 0) {
       toast.error("Please enter a valid amount", {
         position: "top-center",
@@ -110,43 +76,29 @@ const Sell = () => {
       });
     } else {
       try {
-        const amount = await ethers.utils.parseEther(Usd.toString()); // paste amount heres
-        const tx = await (
-          await bitXGold.transfer(
-            "0x5A793d6026Df1219a3f603d98DbFee10680026e1",
-            amount
-          )
-        ).wait(); // replace address with admin wallet address
-        if (tx.events) {
-          const requestBody = {
-            wallet_address: state.auth.auth.walletaddress,
-            bxg: Usd,
-            usdt: totalbxgvalue,
-            blockhash: tx.blockhash,
-          };
+        const requestBody = {
+          wallet_address: state.auth.auth.walletaddress,
+          bxg: Usd,
+          usdt: totalbxgvalue,
+          blockhash: "tx.blockhash",
+        };
 
-          const { data } = await axiosInstance
-            .put("/api/bxg/", requestBody)
-            .catch((err) => {
-              toast.error(err.response.data.message, {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            });
-
-          if (data === "Sold Successfuly.") {
-            toast.success("Request Sent Successfully", {
+        const { data } = await axiosInstance
+          .put("/api/bxg/", requestBody)
+          .catch((err) => {
+            toast.error(err.response.data.message, {
               position: "top-center",
               style: { minWidth: 180 },
             });
-          } else {
-            toast.error(data.message, {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-          }
+          });
+
+        if (data === "Sold Successfuly.") {
+          toast.success("Request Sent Successfully", {
+            position: "top-center",
+            style: { minWidth: 180 },
+          });
         } else {
-          toast.error("Transaction Failed", {
+          toast.error(data.message, {
             position: "top-center",
             style: { minWidth: 180 },
           });

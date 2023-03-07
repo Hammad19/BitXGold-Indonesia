@@ -59,132 +59,30 @@ const Buy = () => {
     const logout = () => {
       dispatch(Logout(navigate));
     };
-
-    let address = "";
-    let signer = {};
-    if (state.auth.isLoggedInFromMobile === "mobile") {
-      const RPC_URLS = {
-        1: "https://bsc-dataseed1.binance.org/",
-      };
-      const provider = new WalletConnectProvider({
-        rpc: {
-          1: RPC_URLS[1],
-        },
-        qrcode: true,
-      });
-      const accounts = await provider.enable();
-      const library = new Web3Provider(provider, "any");
-      signer = library.getSigner();
-      address = accounts[0];
-    } else {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const addresses = await provider.send("eth_requestAccounts", []);
-      address = addresses[0];
-    }
-    if (address !== state.auth.auth.walletaddress) {
-      toast.error("Wrong account is selected, Logging Out", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-      setTimeout(logout, 1000);
-      return;
-    }
-
-    const swap = new ethers.Contract(bitXSwap.address, bitXSwap.abi, signer);
-    const usdtToken = new ethers.Contract(usdt.address, usdt.abi, signer);
-
     setloader(true);
     if (bxgvalue === 0) {
-      toast.error("Please enter a valid amount", {
+      toast.error("Please enter BXG value", {
         position: "top-center",
         style: { minWidth: 180 },
       });
     } else {
       try {
-        const amount = ethers.utils.parseEther(bxgvalue);
-        const value = await usdtToken.allowance(
-          state.auth.auth.walletaddress,
-          bitXSwap.address
-        );
-        if (value < amount) {
-          const amountApprove = ethers.utils.parseEther(
-            "100000000000000000000000000000000000000000"
-          );
-          await (
-            await usdtToken.approve(bitXSwap.address, amountApprove)
-          ).wait();
-        }
-        const tx = await (await swap.swapBuy(amount)).wait();
-        if (tx.events) {
-          var wasAdded = {};
-          try {
-            if (state.auth.isLoggedInFromMobile === "mobile") {
-              wasAdded = await state.auth.provider.request({
-                method: "wallet_watchAsset",
-                params: {
-                  type: "ERC20",
-                  options: {
-                    address: "0x4BBDE1FD97121B68c882fbAfA1C6ee0099c2Eb8b",
-                    symbol: "BXG",
-                    decimals: 18,
-                    image: `https://i.ibb.co/H7P6tFL/Whats-App-Image-2023-02-21-at-11-50-44-PM.jpg`,
-                  },
-                },
-              });
-            } else if (state.auth.isLoggedInFromMobile === "laptop") {
-              wasAdded = await window.ethereum.request({
-                method: "wallet_watchAsset",
-                params: {
-                  type: "ERC20",
-                  options: {
-                    address: "0x4BBDE1FD97121B68c882fbAfA1C6ee0099c2Eb8b",
-                    symbol: "BXG",
-                    decimals: 18,
-                    image: `https://i.ibb.co/H7P6tFL/Whats-App-Image-2023-02-21-at-11-50-44-PM.jpg`,
-                  },
-                },
-              });
-            }
-            if (wasAdded) {
-              toast.success("Token added in metamask successfully", {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            }
-          } catch (error) {
-            toast.error(error.message, {
+        const requestBody = {
+          wallet_address: state.auth.auth.walletaddress,
+          bxg: bxgvalue,
+          usdt: totalUsd,
+          blockhash: "tx.blockHash",
+        };
+        const { data } = await axiosInstance
+          .post("/api/bxg/", requestBody)
+          .catch((err) => {
+            toast.error(err.response.data.message, {
               position: "top-center",
               style: { minWidth: 180 },
             });
-          }
-          toast.success(tx.blockHash, {
-            position: "top-center",
-            style: { minWidth: 180 },
           });
-
-          const requestBody = {
-            wallet_address: state.auth.auth.walletaddress,
-            bxg: bxgvalue,
-            usdt: totalUsd,
-            blockhash: tx.blockHash,
-          };
-          const { data } = await axiosInstance
-            .post("/api/bxg/", requestBody)
-            .catch((err) => {
-              toast.error(err.response.data.message, {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            });
-          if (data === "Purchasing Successfull.") {
-            toast.success(data, {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-          }
-        } else {
-          toast.error("Transaction Failed", {
+        if (data === "Purchasing Successfull.") {
+          toast.success(data, {
             position: "top-center",
             style: { minWidth: 180 },
           });
@@ -194,7 +92,6 @@ const Buy = () => {
           position: "top-center",
           style: { minWidth: 180 },
         });
-        //console.log(error);
       }
     }
     setloader(false);

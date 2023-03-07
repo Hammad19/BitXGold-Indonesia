@@ -2,8 +2,8 @@ import axios from "axios";
 import { store } from "../store/store";
 
 const axiosInstance = axios.create({
-  //baseURL: `http://localhost:4000`,
-  baseURL: `https://api.bitx.gold`,
+  baseURL: `http://localhost:4000`,
+  //baseURL: `https://api.bitx.gold`,
   //baseURL: `https://ill-veil-colt.cyclic.app`,
 });
 

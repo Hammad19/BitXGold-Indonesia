@@ -72,14 +72,18 @@ export function loginAction(email, password, navigate) {
         const decoded = jwt_decode(response.data.access);
         console.log(decoded);
         let tokenDetails = {
+          id: decoded.id,
           token: response.data.access,
-          expiresIn: 3600,
+          expiresIn: decoded.exp * 1000,
           walletaddress: "",
           isAdmin: decoded.is_admin,
-          email: decoded.email,
         };
         saveTokenInLocalStorage(tokenDetails);
-        runLogoutTimer(dispatch, tokenDetails.expiresIn * 1000, navigate);
+        runLogoutTimer(
+          dispatch,
+          tokenDetails.expiresIn - decoded.iat,
+          navigate
+        );
         dispatch(loginConfirmedAction(tokenDetails));
 
         if (decoded.is_admin) {
