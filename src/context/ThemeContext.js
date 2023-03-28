@@ -18,7 +18,7 @@ const initialState = {
   navigationHader: "color_4",
   haderColor: "color_1",
   sidebarColor: "color_4",
-  background: { value: "light", label: "Light" },
+  background: { value: "dark", label: "Dark" },
   containerPositionSize: { value: "wide-boxed", label: "Wide Boxed" },
   iconHover: false,
   menuToggle: false,
