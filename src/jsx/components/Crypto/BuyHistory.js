@@ -82,10 +82,10 @@ const BuyHistory = () => {
     //console.log(state.auth.auth.walletaddress, "walletaddress");
     try {
       const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
+        user_id: state.auth.userDetails.id,
       };
       const { data } = await axiosInstance
-        .get("/api/bxghistory/" + requestBody.wallet_address)
+        .get("/api/bxghistory/" + requestBody.user_id)
         .catch((err) => {
           toast.error(err.response.data.message, {
             style: { minWidth: 180 },
@@ -101,8 +101,6 @@ const BuyHistory = () => {
       );
       setRequests(temp.reverse());
       setdataMain(data);
-
-
     } catch (err) {
       toast.error(err.message, {
         style: { minWidth: 180 },
@@ -179,7 +177,7 @@ const BuyHistory = () => {
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>{item.user.wallet_public_key}</td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
                                   <td>{item.usdt}</td>
