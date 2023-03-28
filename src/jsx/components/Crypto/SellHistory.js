@@ -75,10 +75,10 @@ const SellHistory = () => {
     //console.log(state.auth.auth.walletaddress, "walletaddress");
     try {
       const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
+        user_id: state.auth.userDetails.id,
       };
       const { data } = await axiosInstance
-        .get("/api/bxghistory/" + requestBody.wallet_address)
+        .get("/api/bxghistory/" + requestBody.user_id)
         .catch((err) => {
           toast.error(err.response.data.message, {
             style: { minWidth: 180 },
@@ -213,11 +213,11 @@ const SellHistory = () => {
                           <tbody>
                             {}
                             {requests
-                              ?.filter((item) => item.type === "pending")
+                              ?.filter((item) => item.type === "sell_pending")
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>{item.user.wallet_public_key}</td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
                                   <td>{item.usdt}</td>
@@ -235,23 +235,24 @@ const SellHistory = () => {
                           </tbody>
                         </table>
                         <div className="d-sm-flex text-center justify-content-between align-items-center mt-3 mb-3">
-                          {requests.filter((item) => item.type === "pending")
-                            ?.length > 0 ? (
+                          {requests.filter(
+                            (item) => item.type === "sell_pending"
+                          )?.length > 0 ? (
                             <div className="dataTables_info">
                               {t("showing")} {activePag.current * sort + 1}{" "}
                               {t("to")}{" "}
                               {requests.filter(
-                                (item) => item.type === "pending"
+                                (item) => item.type === "sell_pending"
                               ).length >
                               (activePag.current + 1) * sort
                                 ? (activePag.current + 1) * sort
                                 : requests.filter(
-                                    (item) => item.type === "pending"
+                                    (item) => item.type === "sell_pending"
                                   ).length}{" "}
                               {t("of")}{" "}
                               {
                                 requests.filter(
-                                  (item) => item.type === "pending"
+                                  (item) => item.type === "sell_pending"
                                 ).length
                               }{" "}
                               {t("entries")}
