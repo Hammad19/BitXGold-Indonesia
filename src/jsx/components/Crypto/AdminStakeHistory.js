@@ -61,7 +61,7 @@ const AdminStakeHistory = () => {
 
     console.log(data, "data");
     setEmail(data.email);
-    setWhatsapp(data.whatsapp);
+    setWhatsapp(data.contact);
 
     setShowModal(true);
   };
@@ -94,7 +94,7 @@ const AdminStakeHistory = () => {
   activePag.current === 0 && chageData(0, sort);
   // paggination
   let paggination = Array(
-    Math.ceil(requests.filter((item) => item.type === "Stake").length / sort)
+    Math.ceil(requests.filter((item) => item.type === "stake").length / sort)
   )
     .fill()
     .map((_, i) => i + 1);
@@ -129,9 +129,6 @@ const AdminStakeHistory = () => {
 
     //console.log(state.auth.auth.walletaddress, "walletaddress");
     try {
-      const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
-      };
       const { data } = await axiosInstance
         .get("/api/stakehistory/getall")
         .catch((err) => {
@@ -152,7 +149,7 @@ const AdminStakeHistory = () => {
       );
       setRequests(temp.reverse());
       setdataMain(data);
-      setStakeItems(data.filter((item) => item.type === "Stake"));
+      setStakeItems(data.filter((item) => item.type === "stake"));
     } catch (err) {
       toast.error(err.message, {
         style: { minWidth: 180 },
@@ -282,16 +279,16 @@ const AdminStakeHistory = () => {
                           <tbody>
                             {}
                             {requests
-                              ?.filter((item) => item.type === "Stake")
+                              ?.filter((item) => item.type === "stake")
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>
                                     <Link
                                       onClick={() => {
-                                        handleConnectClick(item.wallet_address);
+                                        handleConnectClick(item.user_id);
                                       }}>
-                                      {item.wallet_address}
+                                      {item.user.wallet_public_key}
                                     </Link>
                                   </td>
                                   {/* <td>{item.blockhash}</td> */}
@@ -312,21 +309,21 @@ const AdminStakeHistory = () => {
                           </tbody>
                         </table>
                         <div className="d-sm-flex text-center justify-content-between align-items-center mt-3 mb-3">
-                          {requests.filter((item) => item.type === "Stake")
+                          {requests.filter((item) => item.type === "stake")
                             ?.length > 0 ? (
                             <div className="dataTables_info">
                               {t("showing")} {activePag.current * sort + 1}{" "}
                               {t("to")}{" "}
-                              {requests.filter((item) => item.type === "Stake")
+                              {requests.filter((item) => item.type === "stake")
                                 .length >
                               (activePag.current + 1) * sort
                                 ? (activePag.current + 1) * sort
                                 : requests.filter(
-                                    (item) => item.type === "Stake"
+                                    (item) => item.type === "stake"
                                   ).length}{" "}
                               {t("of")}{" "}
                               {
-                                requests.filter((item) => item.type === "Stake")
+                                requests.filter((item) => item.type === "stake")
                                   .length
                               }{" "}
                               {t("entries")}
