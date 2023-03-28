@@ -25,7 +25,7 @@ const BonusReferral = () => {
     setLoader(true);
     try {
       const thisPageData = await GetValuesForBonusPage(
-        state.auth.auth.walletaddress
+        state.auth.userDetails.wallet_public_key
       );
       setReferralData(thisPageData.referalData);
       setReferCode(thisPageData.referCode);
@@ -69,7 +69,7 @@ const BonusReferral = () => {
             copyToClipBoard={myFunction}
           />
           <BonusReferralCard
-            walletaddress={state.auth.auth.walletaddress}
+            walletaddress={state.auth.userDetails.wallet_public_key}
             referCode={referCode}
           />
           <BonusReferralTable referralData={referralData} />
