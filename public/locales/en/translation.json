@@ -25,6 +25,8 @@
     "dashboard_card_3": "Referral Bonus",
     "dashboard_card_4": "Staking Referral Bonus",
     "dashboard_card_5": "Total Earnings",
+    "dashboard_card_6": "Total USDT Available",
+    "dashboard_card_7": "Total BNB Available",
     "profile": "Profile",
     "logout": "Logout",
     "buy_header": "Buy",
