@@ -39,7 +39,7 @@ const AdminBuyHistory = () => {
 
     console.log(data, "data");
     setEmail(data.email);
-    setWhatsapp(data.whatsapp);
+    setWhatsapp(data.contact);
 
     setShowModal(true);
   };
@@ -233,9 +233,9 @@ const AdminBuyHistory = () => {
                                   <td>
                                     <Link
                                       onClick={() => {
-                                        handleConnectClick(item.wallet_address);
+                                        handleConnectClick(item.user_id);
                                       }}>
-                                      {item.wallet_address}
+                                      {item.user.wallet_public_key}
                                     </Link>
                                   </td>
                                   {/* <td>{item.blockhash}</td> */}
