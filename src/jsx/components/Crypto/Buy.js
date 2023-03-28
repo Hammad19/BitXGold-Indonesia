@@ -56,9 +56,6 @@ const Buy = () => {
   }, []);
 
   const handleBuy = async () => {
-    const logout = () => {
-      dispatch(Logout(navigate));
-    };
     setloader(true);
     if (bxgvalue === 0) {
       toast.error("Please enter BXG value", {
@@ -66,23 +63,31 @@ const Buy = () => {
         style: { minWidth: 180 },
       });
     } else {
+      console.log(bxgvalue);
+      console.log(state.auth.userDetails.wallet_public_key);
       try {
         const requestBody = {
-          wallet_address: state.auth.auth.walletaddress,
+          user_id: state.auth.userDetails.id,
           bxg: bxgvalue,
           usdt: totalUsd,
-          blockhash: "tx.blockHash",
         };
         const { data } = await axiosInstance
-          .post("/api/bxg/", requestBody)
+          .post("/api/bxg/buy", requestBody)
           .catch((err) => {
             toast.error(err.response.data.message, {
               position: "top-center",
               style: { minWidth: 180 },
             });
           });
+
+        console.log(data);
         if (data === "Purchasing Successfull.") {
           toast.success(data, {
+            position: "top-center",
+            style: { minWidth: 180 },
+          });
+        } else {
+          toast.error(data.message, {
             position: "top-center",
             style: { minWidth: 180 },
           });
