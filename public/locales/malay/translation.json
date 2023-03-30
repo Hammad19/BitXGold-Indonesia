@@ -81,6 +81,7 @@
     "admin_sell_history": "Sejarah Penjualan Admin",
     "admin_stake_history": "Sejarah Stake Admin",
     "admin_setting": "Pengaturan Admin",
+    "admin_withdraw_history": "Sejarah Penarikan Admin",
     "users": "Pengguna",
     "total": "Jumlah",
     "sell_requests": "Permintaan Jual",
@@ -107,5 +108,8 @@
     "totalBxgAvailable": "Jumlah BXG Tersedia dalam Dompet Pengguna",
     "totalbxgstaked": "Jumlah BXG Dipertaruhkan",
     "totalbxgclaimed": "Jumlah Ganjaran yang Diedarkan",
-    "totalusers": "Jumlah Pengguna"
+    "totalusers": "Jumlah Pengguna",
+    "withdraw": "Tarik",
+    "withdraw_header_description": "BNB, USDT & BXG di BitXGold",
+    "withdraw_history": "Sejarah Penarikan"
 }

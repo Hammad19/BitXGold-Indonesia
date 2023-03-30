@@ -13,6 +13,7 @@
     "buy_history": "Riwayat Pembelian",
     "sell_history": "Riwayat Penjualan",
     "stake_history": "Riwayat Stake",
+    "withdraw_history": "Riwayat Penarikan",
     "staking_referral": "Menanamkan Referensi",
     "bonus_referral": "Bonus Referral",
     "dashboard_header_card_description": "Beli & Jual BXG Secara Instan",
@@ -78,6 +79,7 @@
     "admin_sell_history": "Riwayat Penjualan Admin",
     "admin_stake_history": "Riwayat Stake Admin",
     "admin_setting": "Pengaturan Admin",
+    "admin_withdraw_history": "Riwayat Penarikan Admin",
     "users": "Pengguna",
     "total": "Total",
     "sell_requests": "Permintaan Jual",
@@ -104,5 +106,7 @@
     "totalBxgAvailable": "Total BXG yang Tersedia di Dompet Pengguna",
     "totalbxgstaked": "Total BXG Dipertaruhkan",
     "totalbxgclaimed": "Total Hadiah yang Didistribusikan",
-    "totalusers": "Total Pengguna"
+    "totalusers": "Total Pengguna",
+    "withdraw": "Tarik",
+    "withdraw_header_description": "BNB, USDT & BXG di BitXGold"
 }

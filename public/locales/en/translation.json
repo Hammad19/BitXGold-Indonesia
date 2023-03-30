@@ -16,6 +16,7 @@
     "buy_history": "Buy History",
     "sell_history": "Sell History",
     "stake_history": "Stake History",
+    "withdraw_history": "Withdraw History",
     "staking_referral": "Staking Referral",
     "bonus_referral": "Bonus Referral",
     "dashboard_header_card_description": "Buy & Sell BXG Instantly",
@@ -81,6 +82,7 @@
     "admin_sell_history": "Admin Sell History",
     "admin_stake_history": "Admin Stake History",
     "admin_setting": "Admin Settings",
+    "admin_withdraw_history": "Withdrawal History",
     "users": "Users",
     "total": "Total",
     "sell_requests": "Sell Requests",
@@ -107,5 +109,7 @@
     "totalBxgAvailable": "Total BXG In User's Wallet",
     "totalbxgstaked": "Total BXG Staked",
     "totalbxgclaimed": "Total Rewards Distributed",
-    "totalusers": "Total Users"
+    "totalusers": "Total Users",
+    "withdraw": "Withdraw",
+    "withdraw_header_description": "BNB, USDT & BXG at BitXGold "
 }
