@@ -28,6 +28,8 @@ function Login(props) {
   let errorsObj = { email: "", password: "" };
   const [errors, setErrors] = useState(errorsObj);
   const [password, setPassword] = useState("123456");
+  const state = useSelector((state) => state);
+  const navigate = useNavigate();
 
   function onLogin(e) {
     e.preventDefault();
@@ -46,9 +48,13 @@ function Login(props) {
       return;
     }
 
-    dispatch(loadingToggleAction(true));
+    //dispatch(loadingToggleAction(true));
     dispatch(loginAction(email, password, navigate));
   }
+
+  useEffect(() => {
+    console.log(state.auth);
+  }, [state.auth]);
 
   function handleConnectClick() {
     setShowModal(true);
@@ -58,9 +64,6 @@ function Login(props) {
     setShowModal(false);
   }
   const dispatch = useDispatch();
-
-  const state = useSelector((state) => state);
-  const navigate = useNavigate();
 
   const [data, setdata] = useState({
     address: "", // Stores address
@@ -73,142 +76,7 @@ function Login(props) {
     changeBackground({ value: "dark", label: "Dark" });
   }, []);
 
-  const handleSubmit = () => {
-    handleWalletConnect();
-  };
-
-  const [account, setAccount] = useState();
-  const [signer, setSigner] = useState();
-
-  async function handleWalletConnect() {
-    //console.log("handleWalletConnect");
-    try {
-      const RPC_URLS = {
-        1: "https://bsc-dataseed1.binance.org/",
-      };
-      const provider = new WalletConnectProvider({
-        rpc: {
-          1: RPC_URLS[1],
-        },
-        qrcode: true,
-      });
-      const accounts = await provider.enable();
-      const accountAddres = accounts[0];
-
-      //console.log("accountAddres", accountAddres);
-      const library = new Web3Provider(provider, "any");
-      const signerAddress = library.getSigner();
-      //console.log("signerAddress", signerAddress);
-      const { chainId } = await library.getNetwork();
-      const balance = await library.getBalance(accountAddres);
-      //console.log("balance", balance);
-      setAccount(accountAddres);
-      setSigner(signerAddress);
-
-      if (chainId === 56) {
-        setdata({
-          address: accountAddres,
-          Balance: balance,
-        });
-        const signedMessage = await signerAddress.signMessage(
-          `Welcome to BITXGOLD  ${Date.now().toString()}`
-        );
-
-        //console.log(signedMessage, "signedMessage");
-        if (signedMessage) {
-          const dt = {
-            hash: signedMessage,
-            wallet_address: accountAddres,
-          };
-
-          const { data } = await axiosInstance.post("/user/login/", dt);
-
-          if (data.status) {
-            dispatch(
-              saveSigner(signerAddress, accountAddres, provider, "mobile")
-            );
-            console.log("data", data);
-            setToken(data.access);
-          }
-        }
-      }
-    } catch (errpr) {
-      console.log(errpr);
-    }
-  }
-
-  const login = async () => {
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-
-      //Request account access if needed
-      const { chainId } = await provider.getNetwork();
-      const addresses = await provider.send("eth_requestAccounts", []);
-      const address = addresses[0];
-      const balance = await provider.getBalance(address);
-      if (chainId !== 56) {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: `0x${Number(56).toString(16)}` }],
-        });
-      }
-      if (chainId === 56) {
-        setdata({
-          address: address,
-          Balance: balance,
-        });
-        const signedMessage = await signer.signMessage(
-          `Welcome to BITXGOLD  ${Date.now().toString()}`
-        );
-
-        //console.log(signedMessage, "signedMessage");
-        if (signedMessage) {
-          const dt = {
-            hash: signedMessage,
-            wallet_address: address,
-          };
-
-          const { data } = await axiosInstance.post("/user/login/", dt);
-
-          if (data.status) {
-            dispatch(saveSigner(signer, address, provider, "laptop"));
-
-            setToken(data.access);
-          }
-        }
-      }
-    } catch (err) {
-      toast.error(err.message, {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-    }
-  };
-
   //useeffect for data to redirect it to dashboard
-  useEffect(() => {
-    getToken();
-  }, [token]);
-  async function getToken() {
-    if (token !== "") {
-      // get refel value
-      const data3 = await axiosInstance.get("/api/bonusrefer/" + data.address);
-      if (data3.data.isRefered === false) {
-        dispatch(saveD(data.address, token));
-        navigate("/conformation", { data });
-      } else {
-        dispatch(
-          connectToMetaMask(
-            navigate,
-            data.address,
-            token,
-            state.auth.adminwalletaddress
-          )
-        );
-      }
-    }
-  }
   return (
     <div className="page-wraper">
       <Toaster />
@@ -217,13 +85,9 @@ function Login(props) {
           className="bg-img-fix overflow-hidden "
           style={{
             background: "#fff url(" + bg6 + ")",
-            // cover no-repeat center center fixed",
             backgroundSize: "cover",
 
-            //stretch to fit the page
-            //take the height equal to the height of the viewport
             minHeight: "100vh",
-
             backgroundAttachment: "fixed",
             backgroundRepeat: "no-repeat",
           }}>
@@ -336,7 +200,7 @@ function Login(props) {
                                 className="btn btn-primary button-md btn-block">
                                 Create an account
                               </NavLink>
-                              <Button
+                              {/* <Button
                                 className="btn btn-primary button-md btn-block"
                                 onClick={handleConnectClick}>
                                 Login
@@ -346,7 +210,7 @@ function Login(props) {
                                 onHide={handleModalClose}
                                 handlelogin={login}
                                 handlewalletconnect={handleWalletConnect}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
