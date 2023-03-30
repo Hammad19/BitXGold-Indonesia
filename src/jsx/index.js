@@ -38,6 +38,7 @@ import SellHistory from "./components/Crypto/SellHistory";
 import BuyHistory from "./components/Crypto/BuyHistory";
 import StakeHistory from "./components/Crypto/StakeHistory";
 import AdminBuyHistory from "./components/Crypto/AdminBuyHistory";
+import WithdrawHistory from "./components/Crypto/WithdrawHistory";
 
 //Redux
 //import Todo from "./pages/Todo";
@@ -61,6 +62,7 @@ import Conformation from "./pages/conformation";
 import AdminStakeHistory from "./components/Crypto/AdminStakeHistory";
 import SettingAdmin from "./layouts/SettingAdmin";
 import Deposit from "./components/Crypto/Deposit";
+import Withdraw from "./components/Crypto/Withdraw";
 const allroutesMain = [
   /// Dashboard
   { url: "", component: <Home />, admin: false },
@@ -72,12 +74,14 @@ const allroutesMain = [
   { url: "sell", component: <Sell />, admin: false },
   { url: "stake", component: <Stake />, admin: false },
   { url: "deposit", component: <Deposit />, admin: false },
+  { url: "withdraw", component: <Withdraw />, admin: false },
   { url: "bonus-referral", component: <BonusReferral />, admin: false },
   { url: "staking-referral", component: <StakingReferral />, admin: false },
 
   { url: "sell-history", component: <SellHistory />, admin: false },
   { url: "buy-history", component: <BuyHistory />, admin: false },
   { url: "stake-history", component: <StakeHistory />, admin: false },
+  { url: "withdraw-history", component: <WithdrawHistory />, admin: false },
 
   //admin
   { url: "admindashboard", component: <AdminHome />, admin: true },
@@ -85,6 +89,11 @@ const allroutesMain = [
   { url: "admin-buy-history", component: <AdminBuyHistory />, admin: true },
   { url: "admin-stake-history", component: <AdminStakeHistory />, admin: true },
   { url: "admin-setting", component: <SettingAdmin />, admin: true },
+  {
+    url: "admin-withdraw-history",
+    component: <WithdrawHistory />,
+    admin: true,
+  },
 
   //admin
 

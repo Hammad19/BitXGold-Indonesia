@@ -42,6 +42,13 @@ export const MenuList = [
     to: "deposit",
     key: "deposit",
   },
+  {
+    title: "Withdraw",
+    //classsChange: 'mm-collapse',
+    iconStyle: <i className="material-icons">currency_bitcoin</i>,
+    to: "withdraw",
+    key: "withdraw",
+  },
 
   {
     title: "Affiliate Awards",
@@ -87,6 +94,14 @@ export const MenuList = [
         iconStyle: <i className="material-icons">grid_view</i>,
         to: "stake-history",
         key: "stake_history",
+      },
+
+      //withdraw history
+      {
+        title: "Withdraw History",
+        iconStyle: <i className="material-icons">grid_view</i>,
+        to: "withdraw-history",
+        key: "withdraw_history",
       },
     ],
   },
