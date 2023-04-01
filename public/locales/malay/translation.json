@@ -111,5 +111,8 @@
     "totalusers": "Jumlah Pengguna",
     "withdraw": "Tarik",
     "withdraw_header_description": "BNB, USDT & BXG di BitXGold",
-    "withdraw_history": "Sejarah Penarikan"
+    "withdraw_history": "Sejarah Penarikan",
+    "totalbxginadminwallet": "Jumlah BXG dalam Dompet Admin",
+    "totalbnbinadminwallet": "Jumlah BNB dalam Dompet Admin",
+    "totalusdtinadminwallet": "Jumlah USDT dalam Dompet Admin"
 }

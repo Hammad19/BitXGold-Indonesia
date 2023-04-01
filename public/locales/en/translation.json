@@ -111,5 +111,9 @@
     "totalbxgclaimed": "Total Rewards Distributed",
     "totalusers": "Total Users",
     "withdraw": "Withdraw",
-    "withdraw_header_description": "BNB, USDT & BXG at BitXGold "
+    "withdraw_header_description": "BNB, USDT & BXG at BitXGold ",
+    "admin_withdraw": "Withdraw",
+    "totalbxginadminwallet": "Total BXG In Admin Wallet",
+    "totalusdtinadminwallet": "Total USDT In Admin Wallet",
+    "totalbnbinadminwallet": "Total BNB In Admin Wallet"
 }

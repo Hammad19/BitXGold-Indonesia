@@ -108,5 +108,8 @@
     "totalbxgclaimed": "Total Hadiah yang Didistribusikan",
     "totalusers": "Total Pengguna",
     "withdraw": "Tarik",
-    "withdraw_header_description": "BNB, USDT & BXG di BitXGold"
+    "withdraw_header_description": "BNB, USDT & BXG di BitXGold",
+    "totalbxginadminwallet": "Total BXG di Dompet Admin",
+    "totalbnbinadminwallet": "Total BNB di Dompet Admin",
+    "totalusdtinadminwallet": "Total USDT di Dompet Admin"
 }
