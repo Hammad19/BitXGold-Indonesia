@@ -7,6 +7,8 @@ import axiosInstance from "../../services/AxiosInstance";
 import { ThemeContext } from "../../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 
+import CountryCodePicker from "../components/PhoneInput/CountryCodePicker";
+
 const EditProfile = (props) => {
   const state = useSelector((state) => state);
   const { t } = useTranslation();
@@ -18,18 +20,18 @@ const EditProfile = (props) => {
   const [profileData, setprofileData] = useState({
     id: "",
     email: "",
-    whatsapp: "",
+    contact: "",
   });
   const [email, setemail] = useState("");
   const [whatsapp, setwhatsapp] = useState("");
 
   const getdata = async () => {
     const { data } = await axiosInstance.get(
-      "/api/profile/" + props.state.auth.walletaddress
+      "/api/profile/" + state.auth.userDetails.id
     );
     setprofileData(data);
     setemail(data.email);
-    setwhatsapp(data.whatsapp);
+    setwhatsapp(data.contact);
   };
 
   async function update() {
@@ -40,10 +42,13 @@ const EditProfile = (props) => {
           position: "top-center",
         });
       } else {
-        const mesg = await axiosInstance.put("/api/profile/" + profileData.id, {
-          email: email,
-          whatsapp: whatsapp,
-        });
+        const mesg = await axiosInstance.put(
+          "/api/profile/" + state.auth.userDetails.id,
+          {
+            email: email,
+            contact: whatsapp,
+          }
+        );
         if (mesg.data === "updated") {
           toast.success("updated successfully ", {
             style: { minWidth: 180 },
@@ -52,11 +57,14 @@ const EditProfile = (props) => {
           getdata();
         } else {
           if (mesg.data.message === "User Not Found With The Given Id.") {
-            const response = await axiosInstance.post("/api/profile/", {
-              wallet_address: state.auth.auth.walletaddress,
-              email: email,
-              whatsapp: whatsapp,
-            });
+            const response = await axiosInstance.put(
+              "/api/profile/" + state.auth.userDetails.id,
+              {
+                email: email,
+                contact: whatsapp,
+              }
+            );
+            console.log(response);
 
             if (response.status === 200) {
               toast.success("updated successfully ", {
@@ -113,7 +121,7 @@ const EditProfile = (props) => {
                       }}>
                       <Link>{t("whatsapp")}</Link>
 
-                      <span>{profileData.whatsapp}</span>
+                      <span>{profileData.contact}</span>
                     </li>
                     <li
                       style={{
@@ -141,11 +149,9 @@ const EditProfile = (props) => {
                 <div className="row">
                   <div className="col-sm-6 m-b30">
                     <label className="form-label">{t("whatsapp_number")}</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={whatsapp}
-                      onChange={(e) => setwhatsapp(e.target.value)}
+                    <CountryCodePicker
+                      whatsapp={whatsapp}
+                      setwhatsapp={setwhatsapp}
                     />
                   </div>
                   <div className="col-sm-6 m-b30">
