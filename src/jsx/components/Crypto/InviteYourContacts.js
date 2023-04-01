@@ -24,7 +24,7 @@ function InviteYourContacts(props) {
                       <input
                         id="myInput"
                         disabled={true}
-                        value={state.auth.auth.walletaddress}
+                        value={state.auth.userDetails.wallet_public_key}
                         style={{ height: 60 }}
                         type="text"
                         className="form-control"
