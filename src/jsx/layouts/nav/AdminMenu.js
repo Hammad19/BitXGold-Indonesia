@@ -17,6 +17,14 @@ export const AdminMenuList = [
     key: "requests",
   },
 
+  {
+    title: "Withdraw",
+    //classsChange: 'mm-collapse',
+    iconStyle: <i className="material-icons">currency_bitcoin</i>,
+    to: "admin-withdraw",
+    key: "admin_withdraw",
+  },
+
   //SELL
   {
     title: "Buy History",
