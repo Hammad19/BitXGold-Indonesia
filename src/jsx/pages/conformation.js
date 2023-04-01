@@ -10,8 +10,10 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Web3Provider } from "@ethersproject/providers";
 import { connect, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { connectToMetaMask } from "../../store/actions/AuthActions";
+import { connectToMetaMask, Logout } from "../../store/actions/AuthActions";
+import axios from "axios";
 const Conformation = (props) => {
+  console.log(props);
   const [isreferred, setisreferred] = useState(false);
   const dispatch = useDispatch();
   const { search } = useLocation();
@@ -22,36 +24,10 @@ const Conformation = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const state = useSelector((state) => state);
-  async function profileSave() {
-    try {
-      const mesg = await axiosInstance.post("/api/profile/", {
-        wallet_address: props.tokenData.address,
-        email: "demo@gmail.com",
-        whatsapp: "123456",
-      });
-      if (mesg) {
-        toast.success("Profile Added successfully ", {
-          style: { minWidth: 180 },
-          position: "top-center",
-        });
-      } else {
-        toast.error("some thing went wrong", {
-          style: { minWidth: 180 },
-          position: "top-center",
-        });
-        setLoader(false);
-      }
-    } catch (err) {
-      toast.error("Network Error Try Again Later", {
-        style: { minWidth: 180 },
-        position: "top-center",
-      });
-      setLoader(false);
-    }
-  }
+
   async function getRef() {
     const requestBody = {
-      wallet_address: props.tokenData.address,
+      user_id: props.tokenData.id,
       refer_code: referalAddress,
     };
 
@@ -88,26 +64,42 @@ const Conformation = (props) => {
     const requestBody = {
       wallet_address: referalAddress,
     };
-    const { data } = await axiosInstance
-      .post("/api/bonusrefer/check", requestBody)
+
+    const { data } = await axios
+      .post(
+        "http://localhost:8080/api/bonusrefer/check",
+
+        requestBody,
+        {
+          headers: {
+            Authorization: props.tokenData.token,
+          },
+        }
+      )
       .catch((err) => {
         toast.error("not in chain", {
           position: "top-center",
         });
         return false;
       });
+
+    console.log(data, "data");
     if (data) {
       return data.status;
     }
   }
   async function saveRef() {
     const requestBody = {
-      wallet_address: props.tokenData.address,
+      user_id: state.auth.userDetails.id,
       refer_code: referalAddress,
     };
 
     const { data } = await axiosInstance
-      .post("/api/refer/", requestBody)
+      .post("/api/refer/", requestBody, {
+        headers: {
+          Authorization: props.tokenData.token,
+        },
+      })
       .catch((err) => {
         toast.error(err.response.data.message, {
           position: "top-center",
@@ -137,72 +129,7 @@ const Conformation = (props) => {
     return referalAddressarray;
   }
   async function save() {
-    let address = "";
-    let signer = {};
-    if (state.auth.isLoggedInFromMobile === "mobile") {
-      const RPC_URLS = {
-        1: "https://bsc-dataseed1.binance.org/",
-      };
-      const provider = new WalletConnectProvider({
-        rpc: {
-          1: RPC_URLS[1],
-        },
-        qrcode: true,
-      });
-      const accounts = await provider.enable();
-      const library = new Web3Provider(provider, "any");
-      signer = library.getSigner();
-      address = accounts[0];
-    } else {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const addresses = await provider.send("eth_requestAccounts", []);
-      address = addresses[0];
-    }
-
-    setLoader(true);
-    try {
-      const swap = new ethers.Contract(bitXSwap.address, bitXSwap.abi, signer);
-      const referalAddressarray = await getRef();
-      const value = await swap.Referral(state.auth.account);
-      if (value === "0x0000000000000000000000000000000000000000") {
-        const tx = await (
-          await swap.addReferral(referalAddressarray, referalAddress)
-        ).wait();
-        if (tx.events) {
-          toast.success("Referal Confirmed! Logged in Successfully", {
-            duration: 4000,
-          });
-          getBonus();
-        }
-      } else {
-        toast.error("Already Referred");
-      }
-    } catch (error) {
-      const swap = new ethers.Contract(bitXSwap.address, bitXSwap.abi, signer);
-      const value = await swap.Referral(props.state.tokenData.address);
-      if (value !== "0x0000000000000000000000000000000000000000") {
-        if (referalAddress === value) {
-          toast.success("You have successfully used this referral code", {
-            duration: 4000,
-          });
-          getBonus();
-        } else {
-          toast.error("Please use this referral " + value, {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
-          setLoader(false);
-        }
-      } else {
-        console.log(error);
-        toast.error("Transaction Failed", {
-          position: "top-center",
-          style: { minWidth: 180 },
-        });
-        setLoader(false);
-      }
-    }
+    getBonus();
   }
   const getReferalBonus = async () => {
     if (referalAddress === "") {
@@ -211,68 +138,48 @@ const Conformation = (props) => {
         position: "top-center",
       });
     } else {
-      if (
-        referalAddress.toLowerCase() === state.auth.defultReffer.toLowerCase()
-      ) {
+      const status = await checkDB();
+      if (status) {
         save();
       } else {
-        checkDB().then((res) => {
-          if (res) {
-            save();
-          }
+        toast.error("Please Enter Valid Referal Code", {
+          style: { minWidth: 180 },
+          position: "top-center",
         });
       }
     }
   };
   const getBonus = async () => {
+    console.log(state.auth.userDetails.wallet_public_key);
     try {
       const requestBody = {
-        wallet_address: props.state.tokenData.address,
+        user_id: state.auth.userDetails.id,
         refer_code: referalAddress,
       };
-      const { data } = await axiosInstance
-        .post("/api/bonusrefer/", requestBody)
-        .catch((err) => {
-          if (err.response.data.message === "Already Refered.") {
-            setisreferred(true);
-            profileSave();
-            saveRef();
-            dispatch(
-              connectToMetaMask(
-                navigate,
-                props.tokenData.address,
-                props.tokenData.token,
-                props.state.adminwalletaddress
-              )
-            );
-            handleClose();
-          } else {
-            toast.error(err.response.data.message, {
-              position: "top-center",
-            });
-            setLoader(false);
-          }
-        });
+      const { data } = await axiosInstance.post(
+        "/api/bonusrefer/",
+        requestBody,
+        {
+          headers: {
+            Authorization: props.tokenData.token,
+          },
+        }
+      );
+
+      console.log(data, "data");
       if (data === "Refere Added Successfully.") {
-        toast.success("Refered Successfully");
+        toast.success("Refered Successfully Please Login Again");
         setisreferred(true);
-        profileSave();
+
         saveRef();
         handleClose();
         setLoader(false);
-        dispatch(
-          connectToMetaMask(
-            navigate,
-            props.tokenData.address,
-            props.tokenData.token,
-            props.state.adminwalletaddress
-          )
-        );
+
+        dispatch(Logout(navigate));
       } else {
         toast.error(data.message);
         setLoader(false);
       }
-      handleClose();
     } catch (error) {
       setLoader(false);
     }
@@ -287,7 +194,7 @@ const Conformation = (props) => {
         <>
           <Modal show={show}>
             <Modal.Header>
-              <Modal.Title>Referal Code</Modal.Title>
+              <Modal.Title>Referal Code </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
