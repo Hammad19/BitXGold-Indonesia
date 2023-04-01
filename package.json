@@ -60,6 +60,7 @@
     "react-metamask-login-button": "^1.0.18",
     "react-multiselect-dropdown-bootstrap": "^1.1.0",
     "react-perfect-scrollbar": "^1.5.8",
+    "react-phone-input-2": "^2.15.1",
     "react-qr-code": "^2.0.11",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.4",
