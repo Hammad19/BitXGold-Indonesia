@@ -94,7 +94,11 @@ const allroutesMain = [
     component: <WithdrawHistory />,
     admin: true,
   },
-
+  {
+    url: "admin-withdraw",
+    component: <Withdraw />,
+    admin: true,
+  },
   //admin
 
   { url: "profile", component: <EditProfile />, admin: false },
