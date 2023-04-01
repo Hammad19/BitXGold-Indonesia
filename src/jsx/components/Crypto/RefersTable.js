@@ -32,7 +32,7 @@ function RefersTable(props) {
                 return (
                   <tr>
                     <th>{index + 1}</th>
-                    <td>{item.wallet_address}</td>
+                    <td>{item.user.wallet_public_key}</td>
                     <td>
                       {" "}
                       <Badge bg="" className={"badge-success success"}>
