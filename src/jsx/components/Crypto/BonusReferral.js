@@ -25,7 +25,7 @@ const BonusReferral = () => {
     setLoader(true);
     try {
       const thisPageData = await GetValuesForBonusPage(
-        state.auth.userDetails.wallet_public_key
+        state.auth.userDetails.id
       );
       setReferralData(thisPageData.referalData);
       setReferCode(thisPageData.referCode);
