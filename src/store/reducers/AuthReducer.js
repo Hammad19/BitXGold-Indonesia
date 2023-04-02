@@ -8,6 +8,7 @@ import {
   CONNECTED_TO_METAMASK,
   CONNECTED_TO_Token,
   CONNECTED_TO_WALLET,
+  DETAILS_CONFIRMED_ACTION,
 } from "../actions/AuthActions";
 
 const initialState = {
@@ -15,12 +16,12 @@ const initialState = {
   //adminwalletaddress: "0xd22185D98223D4E77430ea72Fc95E2C15Cf7bC3a",
   defultReffer: "0x97A760EeD672A22c0B782F813F30598B8f994038",
   auth: {
-    email: "",
     idToken: "",
-    localId: "",
+    id: "",
     expiresIn: "",
-    refreshToken: "",
+    isAdmin: "",
   },
+  userDetails: {},
   errorMessage: "",
   successMessage: "",
   showLoading: false,
@@ -42,16 +43,13 @@ export function AuthReducer(state = initialState, action) {
     };
   }
   if (action.type === LOGIN_CONFIRMED_ACTION) {
-    console.log(action.payload, "action.payload");
     return {
       ...state,
       auth: {
         id: action.payload.id,
-        user_name: action.payload.user_name,
         idToken: action.payload.token,
-        walletaddress: action.payload.address,
         isAdmin: action.payload.isAdmin,
-        email: action.payload.email,
+        expiresIn: action.payload.expiresIn,
       },
       errorMessage: "",
       successMessage: "Login Successfully Completed",
@@ -64,13 +62,7 @@ export function AuthReducer(state = initialState, action) {
       ...state,
       errorMessage: "",
       successMessage: "",
-      auth: {
-        email: "",
-        idToken: "",
-        localId: "",
-        expiresIn: "",
-        refreshToken: "",
-      },
+      auth: {},
       signer: {},
       account: "",
       provider: {},
@@ -100,9 +92,11 @@ export function AuthReducer(state = initialState, action) {
     return {
       ...state,
       auth: {
+        id: action.payload.id,
         idToken: action.payload.token,
         walletaddress: action.payload.address,
         isAdmin: action.payload.isAdmin,
+        expiresIn: action.payload.expiresIn,
       },
       errorMessage: "",
       successMessage: "Login Successfully Completed",
@@ -123,6 +117,14 @@ export function AuthReducer(state = initialState, action) {
       account: action.payload.account,
       provider: action.payload.provider,
       isLoggedInFromMobile: action.payload.isLoggedInFromMobile,
+    };
+  }
+
+  if (action.type === DETAILS_CONFIRMED_ACTION) {
+    console.log(action.payload, "action.payload");
+    return {
+      ...state,
+      userDetails: action.payload,
     };
   }
   return state;
