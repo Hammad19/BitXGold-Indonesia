@@ -82,12 +82,12 @@ const OrderTab = ({ acceptedData, to, handleConnectClick }) => {
                     {state.auth.auth.isAdmin ? (
                       <Link
                         onClick={() => {
-                          handleConnectClick(item.wallet_address);
+                          handleConnectClick(item.user_id);
                         }}>
-                        {item.wallet_address}
+                        {item.user.wallet_public_key}
                       </Link>
                     ) : (
-                      item.wallet_address
+                      item.user.wallet_public_key
                     )}
                   </td>
                   {/* <td>{item.blockhash}</td> */}
