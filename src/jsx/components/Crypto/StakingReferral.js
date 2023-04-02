@@ -48,7 +48,7 @@ const StakingReferral = () => {
     setLoader(true);
     try {
       const latestResponse = await GetValuesForReferPage(
-        state.auth.auth.walletaddress
+        state.auth.userDetails.id
       );
 
       setLevel1Count(latestResponse.level1count);
