@@ -81,7 +81,7 @@
   "scripts": {
     "docs-build": "hugo --cleanDestinationDir",
     "docs-purge": "npm run docs-build && purgecss --css docs/static/assets/css/bootstrap.min.css --content \"_site/**/*.html\" docs/static/assets/js/bootstrap.min.js --keyframes --output docs/static/assets/css/",
-    "docs-serve": "hugo server --port 4000 --disableFastRender",
+    "docs-serve": "hugo server --port 8080 --disableFastRender",
     "icons": "npm-run-all icons-main --aggregate-output --parallel icons-sprite icons-font",
     "icons-font": "fantasticon",
     "icons-main": "node build/build-svgs.js",
