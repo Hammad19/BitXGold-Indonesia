@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Web3Provider } from "@ethersproject/providers";
@@ -93,7 +94,7 @@ const Buy = () => {
           });
         }
       } catch (error) {
-        toast.error(error.reason, {
+        toast.error("Transaction Failed", {
           position: "top-center",
           style: { minWidth: 180 },
         });
