@@ -71,13 +71,14 @@ const Deposit = () => {
                 <br></br>
 
                 <div
-                  className="col-xl-3"
+                  className="col-xl-4"
                   style={{
                     height: "auto",
                     margin: "0 auto",
                     width: "100%",
                   }}>
                   <QRCode
+                    className="my-4"
                     size={1000}
                     style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                     value={walletAddress}
