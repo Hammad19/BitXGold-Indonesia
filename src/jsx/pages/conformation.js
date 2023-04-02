@@ -65,9 +65,9 @@ const Conformation = (props) => {
       wallet_address: referalAddress,
     };
 
-    const { data } = await axios
+    const { data } = await axiosInstance
       .post(
-        "http://localhost:8080/api/bonusrefer/check",
+        "/api/bonusrefer/check",
 
         requestBody,
         {
