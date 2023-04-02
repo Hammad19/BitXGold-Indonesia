@@ -67,7 +67,8 @@ const Withdraw = () => {
 
       if (token === "bxg") {
         if (value > bxgBalance) {
-          toast.error("Insufficient Balance", {
+          console.log(value, bxgBalance);
+          toast.error("Insufficient BXG Balance", {
             position: "top-center",
             style: { minWidth: 180 },
           });
@@ -94,11 +95,19 @@ const Withdraw = () => {
         }
       }
 
-      const res = await axiosInstance.post("/api/withdrawcrypto/" + token, {
-        user_id: state.auth.userDetails.id,
-        amount: value,
-        wallet_address: walletAddress,
-      });
+      const res = await axiosInstance
+        .post("/api/withdrawcrypto/" + token, {
+          user_id: state.auth.userDetails.id,
+          amount: value,
+          wallet_address: walletAddress,
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message, {
+            position: "top-center",
+            style: { minWidth: 180 },
+          });
+          setloader(false);
+        });
 
       if (res.data.status) {
         toast.success(res.data.message, {

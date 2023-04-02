@@ -42,8 +42,6 @@ const Stake = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [staking, setStaking] = useState();
-
   const checkStake = async () => {
     const data1 = await axiosInstance.get(
       "/api/stake/" + state.auth.auth.walletaddress
@@ -55,12 +53,7 @@ const Stake = () => {
   const FetchData = async () => {
     setLoader(true);
     try {
-      setStaking(
-        new ethers.Contract(bitXStake.address, bitXStake.abi, state.auth.signer)
-      );
-      const response = await GetValuesForStakePage(
-        state.auth.auth.walletaddress
-      );
+      const response = await GetValuesForStakePage(state.auth.userDetails.id);
       setStakeData(response.stakedData);
       setTotalAmountStaked(response.amountstaked);
       setTotalAmountClaimed(response.amountclaimed);
@@ -80,10 +73,6 @@ const Stake = () => {
   //handleclaim
 
   const handleStake = async () => {
-    const logout = () => {
-      dispatch(Logout(navigate));
-    };
-
     setLoader(true);
     if (amountToStake <= 0) {
       toast.error("Please enter amount to stake", {
@@ -95,7 +84,7 @@ const Stake = () => {
       //if staked once then call stake function else call stakeAndClaim function
       var check = await checkStake();
       if (!check) {
-        if (amountToStake < 20) {
+        if (amountToStake < 1) {
           setLoader(false);
           toast.error("Minimum amount to stake is 20 BXG", {
             position: "top-center",
@@ -106,32 +95,24 @@ const Stake = () => {
       }
       try {
         const requestBody = {
-          wallet_address: state.auth.auth.walletaddress,
+          user_id: state.auth.userDetails.id,
           bxg: amountToStake,
-          blockhash: "tx.blockHash",
-          stake_id: "12",
         };
 
-        const { data } = await axiosInstance
+        const { data, error } = await axiosInstance
           .post("/api/stake/", requestBody)
           .catch((err) => {
-            toast.error(err.response.data, {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
+            toast.error(err.response.data.message);
           });
-        if (data.stake_time) {
+        if (data === "Staked Successfully.") {
           setTotalAmountStaked(data.bxg);
-          toast.success("Staked Successfully", {
+          toast.success(data, {
             position: "top-center",
             style: { minWidth: 180 },
           });
           FetchData();
         } else {
-          toast.error(data.message, {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
+          console.log(error);
         }
       } catch (error) {
         //console.log(error, "Transaction Failed");
@@ -144,28 +125,28 @@ const Stake = () => {
     setLoader(false);
   };
 
-  const handleClaim = async (id, bxgvalue1, stakingID) => {
+  const handleClaim = async (id) => {
     setLoader(true);
-    const logout = () => {
-      dispatch(Logout(navigate));
+
+    let requestBody = {
+      user_id: state.auth.userDetails.id,
+      type: "claim",
     };
+
     try {
-      const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
-        bxg: bxgvalue1,
-        stake_id: stakingID.toString(),
-        blockhash: "tx.blockHash",
-        type: "claim",
-      };
       const { data } = await axiosInstance
         .put("/api/stake/" + id, requestBody)
         .catch((err) => {
-          toast.error(err.response.data, {
+          setLoader(false);
+
+          toast.error(err.response.data.message, {
             position: "top-center",
             style: { minWidth: 180 },
           });
         });
-      if (data.stake_time) {
+
+      //console.log(data, "data");
+      if (data === "claimed ") {
         //setstartTime(new Date());
         setTotalAmountStaked(data.bxg);
         toast.success("Claimed Successfully", {
@@ -175,6 +156,7 @@ const Stake = () => {
         FetchData();
       }
     } catch (error) {
+      setLoader(false);
       toast.error("Transaction Failed", {
         position: "top-center",
         style: { minWidth: 180 },
@@ -385,16 +367,8 @@ const Stake = () => {
                                                 onClick={() => {
                                                   getType(data.stake_time) ===
                                                   "Claim"
-                                                    ? handleClaim(
-                                                        data.id,
-                                                        data.bxg,
-                                                        data.stake_id
-                                                      )
-                                                    : handleClaim(
-                                                        data.id,
-                                                        data.bxg,
-                                                        data.stake_id
-                                                      );
+                                                    ? handleClaim(data.id)
+                                                    : handleClaim(data.id);
                                                 }}
                                                 className="btn btn-warning mr-0 ">
                                                 {getType(data.stake_time)}

@@ -66,26 +66,24 @@ const Sell = () => {
   }, [totalbxgvalue]);
 
   const handleSell = async () => {
-    const logout = () => {
-      dispatch(Logout(navigate));
-    };
     if (Usd === 0) {
       toast.error("Please enter a valid amount", {
         position: "top-center",
         style: { minWidth: 180 },
       });
     } else {
+      setLoader(true);
       try {
         const requestBody = {
-          wallet_address: state.auth.auth.walletaddress,
+          user_id: state.auth.userDetails.id,
           bxg: Usd,
           usdt: totalbxgvalue,
-          blockhash: "tx.blockhash",
         };
 
         const { data } = await axiosInstance
-          .put("/api/bxg/", requestBody)
+          .post("/api/bxg/sell", requestBody)
           .catch((err) => {
+            setLoader(false);
             toast.error(err.response.data.message, {
               position: "top-center",
               style: { minWidth: 180 },
@@ -103,7 +101,9 @@ const Sell = () => {
             style: { minWidth: 180 },
           });
         }
+        setLoader(false);
       } catch (err) {
+        setLoader(false);
         toast.error("Transaction Failed", {
           position: "top-center",
           style: { minWidth: 180 },

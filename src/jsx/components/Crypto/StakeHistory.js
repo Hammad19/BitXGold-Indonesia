@@ -73,7 +73,7 @@ const StakeHistory = () => {
   activePag.current === 0 && chageData(0, sort);
   // paggination
   let paggination = Array(
-    Math.ceil(requests.filter((item) => item.type === "Stake").length / sort)
+    Math.ceil(requests.filter((item) => item.type === "stake").length / sort)
   )
     .fill()
     .map((_, i) => i + 1);
@@ -92,10 +92,10 @@ const StakeHistory = () => {
     //console.log(state.auth.auth.walletaddress, "walletaddress");
     try {
       const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
+        user_id: state.auth.userDetails.id,
       };
       const { data } = await axiosInstance
-        .get("/api/stakehistory/" + requestBody.wallet_address)
+        .get("/api/stakehistory/" + requestBody.user_id)
         .catch((err) => {
           toast.error(err.response.data.message, {
             style: { minWidth: 180 },
@@ -221,11 +221,11 @@ const StakeHistory = () => {
                           <tbody>
                             {}
                             {requests
-                              ?.filter((item) => item.type === "Stake")
+                              ?.filter((item) => item.type === "stake")
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>{item.user.wallet_public_key}</td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
 
@@ -243,21 +243,21 @@ const StakeHistory = () => {
                           </tbody>
                         </table>
                         <div className="d-sm-flex text-center justify-content-between align-items-center mt-3 mb-3">
-                          {requests.filter((item) => item.type === "Stake")
+                          {requests.filter((item) => item.type === "stake")
                             ?.length > 0 ? (
                             <div className="dataTables_info">
                               {t("showing")} {activePag.current * sort + 1}{" "}
                               {t("to")}{" "}
-                              {requests.filter((item) => item.type === "Stake")
+                              {requests.filter((item) => item.type === "stake")
                                 .length >
                               (activePag.current + 1) * sort
                                 ? (activePag.current + 1) * sort
                                 : requests.filter(
-                                    (item) => item.type === "Stake"
+                                    (item) => item.type === "stake"
                                   ).length}{" "}
                               {t("of")}{" "}
                               {
-                                requests.filter((item) => item.type === "Stake")
+                                requests.filter((item) => item.type === "stake")
                                   .length
                               }{" "}
                               {t("entries")}
