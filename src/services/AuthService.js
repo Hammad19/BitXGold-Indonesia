@@ -1,13 +1,15 @@
-import { Web3Provider } from "@ethersproject/providers";
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import axios from "axios";
 import { ethers } from "ethers/lib";
 import swal from "sweetalert";
 import {
+  getUserDetailsAction,
+  getUserDetailsConfirmedAction,
   loginConfirmedAction,
   Logout,
   saveSigner,
 } from "../store/actions/AuthActions";
+
+const baseUrl = "http://localhost:8080";
 
 export function signUp(user_name, email, password) {
   //axios call
@@ -16,7 +18,7 @@ export function signUp(user_name, email, password) {
     email,
     password,
   };
-  return axios.post(`http://localhost:4000/api/user/register`, postData);
+  return axios.post(`${baseUrl}/api/auth/register`, postData);
 }
 
 export function login(email, password) {
@@ -24,7 +26,23 @@ export function login(email, password) {
     email,
     password,
   };
-  return axios.post(`http://localhost:4000/api/user/login`, postData);
+  return axios.post(`${baseUrl}/api/auth/login`, postData);
+}
+
+export function getUserDetails(token, user_id) {
+  return axios.get(`${baseUrl}/api/user/` + user_id, {
+    headers: {
+      Authorization: token,
+    },
+  });
+}
+
+export function isAlreadyReferred(id, token) {
+  return axios.get(`${baseUrl}/api/bonusrefer/` + id, {
+    headers: {
+      Authorization: token,
+    },
+  });
 }
 
 export function formatError(errorResponse) {
@@ -58,8 +76,10 @@ export function formatError(errorResponse) {
   }
 }
 
-export function saveTokenInLocalStorage(tokenDetails) {
-  localStorage.setItem("userDetails", JSON.stringify(tokenDetails));
+export function saveTokenInLocalStorage(tokenDetails, userdetails) {
+  console.log("Saving token");
+  localStorage.setItem("token", JSON.stringify(tokenDetails));
+  localStorage.setItem("user", JSON.stringify(userdetails));
 }
 
 export function savedetails(isLoggedInFromMobile) {
@@ -74,69 +94,34 @@ export function runLogoutTimer(dispatch, timer, navigate) {
   }, timer);
 }
 
-export async function GetProviderAndSignerForLaptop() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const addresses = await provider.send("eth_requestAccounts", []);
-  const address = addresses[0];
-  return { signer, address, provider };
-}
-
-export async function GetProviderAndSignerForMobile() {
-  try {
-    const RPC_URLS = {
-      1: "https://bsc-dataseed1.binance.org/",
-    };
-    const provider = new WalletConnectProvider({
-      rpc: {
-        1: RPC_URLS[1],
-      },
-      qrcode: true,
-    });
-    const accounts = await provider.enable();
-    const accountAddres = accounts[0];
-
-    const library = new Web3Provider(provider, "any");
-    const signerAddress = library.getSigner();
-    return { signerAddress, accountAddres, provider };
-  } catch (error) {
-    console.log("error", error);
-  }
-}
-
 export async function checkAutoLogin(dispatch, navigate) {
-  const tokenDetailsString = localStorage.getItem("userDetails");
-  //const usercredentialsString = localStorage.getItem("isloggedinfrommobile");
+  const tokenDetailsString = localStorage.getItem("token");
+  const usercredentialsString = localStorage.getItem("user");
+
   let tokenDetails = "";
-  if (!tokenDetailsString) {
+  let userDetails = "";
+  if (!tokenDetailsString || !usercredentialsString) {
     dispatch(Logout(navigate));
     return;
   }
 
-  console.log("tokenDetailsString", tokenDetailsString);
-
   tokenDetails = JSON.parse(tokenDetailsString);
-  //console.log("signer in check autologin", usercredentialsString);
-  // var obj = {};
-  // if (usercredentialsString === "mobile") {
-  //   obj = await GetProviderAndSignerForMobile();
-  // } else if (usercredentialsString === "laptop") {
-  //   obj = await GetProviderAndSignerForLaptop();
-  // }
-  //console.log("obj", obj);
+  userDetails = JSON.parse(usercredentialsString);
+
+  console.log("tokenDetails in check auto login", tokenDetails);
+  console.log("userDetails in check auto login", userDetails);
 
   let expireDate = new Date(tokenDetails.expiresIn);
   let todaysDate = new Date();
 
   if (todaysDate > expireDate) {
+    console.log("token expired");
     dispatch(Logout(navigate));
     return;
   }
 
   dispatch(loginConfirmedAction(tokenDetails));
-  // dispatch(
-  //   saveSigner(obj.signer, obj.account, obj.provider, usercredentialsString)
-  // );
+  dispatch(getUserDetailsConfirmedAction(userDetails));
 
   const timer = expireDate.getTime() - todaysDate.getTime();
   runLogoutTimer(dispatch, timer, navigate);
