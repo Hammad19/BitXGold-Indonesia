@@ -32,7 +32,7 @@ export default function BonusReferralTable(props) {
               {props.referralData.map((data, index) => (
                 <tr key={index}>
                   <th>{index + 1}</th>
-                  <td>{data.wallet_address}</td>
+                  <td>{data.user.wallet_public_key}</td>
 
                   <td>{getFormattedDate(data.createdAt)}</td>
                   <td className="color-success">{data.reward} USDT</td>
