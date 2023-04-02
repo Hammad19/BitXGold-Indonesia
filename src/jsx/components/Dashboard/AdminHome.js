@@ -9,12 +9,14 @@ import { useTranslation } from "react-i18next";
 //import ServerStatusBar from './Dashboard/ServerStatusBar';
 
 import axiosInstance, {
+  FetchBalances,
   getDataForAdminDashboard,
 } from "../../../services/AxiosInstance";
 import toast, { Toaster } from "react-hot-toast";
 import { useRef } from "react";
 import AdminDashboardCard from "./Dashboard/AdminDashboardCard";
 import { use } from "i18next";
+import { useSelector } from "react-redux";
 
 const AdminHome = () => {
   const { t } = useTranslation();
@@ -71,11 +73,19 @@ const AdminHome = () => {
   const [totalbxgsold, settotalbxgsold] = useState(0);
   const [totalbxgstaked, settotalbxgstaked] = useState(0);
   const [totalbxgclaimed, settotalbxgclaimed] = useState(0);
+  const [bxgBalance, setBxgBalance] = useState(0);
+  const [bnbBalance, setBnbBalance] = useState(0);
+  const [usdtBalance, setUsdtBalance] = useState(0);
 
+  const state = useSelector((state) => state);
   const FetchData = async () => {
     setLoader(true);
     try {
-      const { data } = await axiosInstance.get("/api/profile/");
+      const { data } = await axiosInstance.get("/api/profile/dashboard");
+      const response = await FetchBalances(state.auth.userDetails.id);
+      setBxgBalance(response.bxg);
+      setBnbBalance(response.bnb);
+      setUsdtBalance(response.usdt);
       settotalBxg(data.totalBxgAvailable);
       settotalUsers(data.userCount);
       settotalbxgsold(data.totalBxgBought);
@@ -120,9 +130,78 @@ const AdminHome = () => {
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           }
-          col={6}
+          col={3}
           translateKey="totalusers"
           bxg={totalUsers}
+        />
+
+        <AdminDashboardCard
+          svg={
+            <svg
+              id="icon-revenue"
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-dollar-sign">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          }
+          col={3}
+          translateKey="totalusdtinadminwallet"
+          bxg={usdtBalance}
+        />
+
+        <AdminDashboardCard
+          svg={
+            <svg
+              id="icon-revenue"
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-dollar-sign">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          }
+          col={3}
+          translateKey="totalbnbinadminwallet"
+          bxg={bnbBalance}
+        />
+
+        <AdminDashboardCard
+          svg={
+            <svg
+              id="icon-revenue"
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-dollar-sign">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          }
+          col={3}
+          translateKey="totalbxginadminwallet"
+          bxg={bxgBalance}
         />
         <AdminDashboardCard
           svg={
@@ -142,7 +221,7 @@ const AdminHome = () => {
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           }
-          col={6}
+          col={3}
           translateKey="totalBxgAvailable"
           bxg={totalBxg}
         />
@@ -165,7 +244,7 @@ const AdminHome = () => {
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           }
-          col={4}
+          col={3}
           translateKey="totalbxgsold"
           bxg={totalbxgsold}
         />
@@ -187,7 +266,7 @@ const AdminHome = () => {
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           }
-          col={4}
+          col={3}
           translateKey="totalbxgstaked"
           bxg={totalbxgstaked}
         />
@@ -209,7 +288,7 @@ const AdminHome = () => {
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           }
-          col={4}
+          col={3}
           translateKey="totalbxgclaimed"
           bxg={totalbxgclaimed}
         />
@@ -250,7 +329,7 @@ const AdminHome = () => {
                                   <td>{index + 1}</td>
                                   <td>{item.wallet_address}</td>
                                   <td>{item.email}</td>
-                                  <td>{item.whatsapp}</td>
+                                  <td>{item.contact}</td>
                                   <td>{item.bxg ? item.bxg : "0"}</td>
                                 </tr>
                               ))}
