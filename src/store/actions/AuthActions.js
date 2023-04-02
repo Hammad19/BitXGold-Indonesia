@@ -1,8 +1,11 @@
 import jwt_decode from "jwt-decode";
+import { useSelector } from "react-redux";
 import swal from "sweetalert";
 
 import {
   formatError,
+  getUserDetails,
+  isAlreadyReferred,
   login,
   runLogoutTimer,
   savedetails,
@@ -19,6 +22,8 @@ export const LOGOUT_ACTION = "[Logout action] logout action";
 export const CONNECTED_TO_METAMASK = "[Metamask action] connected to metamask";
 export const CONNECTED_TO_Token = "[saveData action] connected to Token Data";
 export const CONNECTED_TO_WALLET = "[Wallet action] connected to Wallet";
+export const DETAILS_CONFIRMED_ACTION = "[details action] confirmed details";
+export const DETAILS_FAILED_ACTION = "[details action] failed details";
 
 export function saveSigner(signer, account, provider, isLoggedInFromMobile) {
   //save details in local storage
@@ -55,12 +60,27 @@ export function signupAction(user_name, email, password, navigate) {
 }
 
 export function Logout(navigate) {
-  localStorage.removeItem("userDetails");
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
   navigate("/login");
   //history.push('/login');
 
   return {
     type: LOGOUT_ACTION,
+  };
+}
+
+export function getUserDetailsConfirmedAction(userDetails) {
+  return {
+    type: DETAILS_CONFIRMED_ACTION,
+    payload: userDetails,
+  };
+}
+
+export function getUserDetailsFailedAction(error) {
+  return {
+    type: DETAILS_FAILED_ACTION,
+    payload: error,
   };
 }
 
@@ -70,29 +90,21 @@ export function loginAction(email, password, navigate) {
       .then((response) => {
         console.log(response.data);
         const decoded = jwt_decode(response.data.access);
-        console.log(decoded);
+
+        console.log(decoded, "decoded");
         let tokenDetails = {
           id: decoded.id,
           token: response.data.access,
           expiresIn: decoded.exp * 1000,
-          walletaddress: "",
           isAdmin: decoded.is_admin,
         };
-        saveTokenInLocalStorage(tokenDetails);
-        runLogoutTimer(
-          dispatch,
-          tokenDetails.expiresIn - decoded.iat,
-          navigate
-        );
-        dispatch(loginConfirmedAction(tokenDetails));
 
-        if (decoded.is_admin) {
-          navigate("/admindashboard");
-        } else {
-          navigate("/dashboard");
-        }
+        dispatch(
+          getUserDetailsAction(tokenDetails, decoded.is_admin, navigate)
+        );
       })
       .catch((error) => {
+        console.log(error);
         if (error?.response?.data?.details?.length > 0) {
           swal("Oops", error.response.data.details[0].message, "error", {
             button: "Try Again!",
@@ -104,6 +116,50 @@ export function loginAction(email, password, navigate) {
         }
         dispatch(loginFailedAction(""));
       });
+  };
+}
+
+export function getUserDetailsAction(tokenDetails, isAdmin, navigate) {
+  return (dispatch) => {
+    getUserDetails(tokenDetails.token, tokenDetails.id)
+      .then((response) => {
+        console.log(response.data, "response.data");
+        dispatch(getUserDetailsConfirmedAction(response.data));
+        isAlreadyReferred(response.data.id, tokenDetails.token).then((res) => {
+          if (res.data.isRefered) {
+            console.log("save Token");
+            saveTokenInLocalStorage(tokenDetails, response.data);
+            dispatch(loginConfirmedAction(tokenDetails));
+            const todaysDate = new Date();
+            const expireDate = new Date(tokenDetails.expiresIn);
+            const timer = expireDate.getTime() - todaysDate.getTime();
+            runLogoutTimer(dispatch, timer, navigate);
+            console.log(isAdmin);
+            if (!isAdmin) {
+              console.log("here in dashboard");
+              navigate("/dashboard");
+            } else {
+              navigate("/admindashboard");
+            }
+          } else {
+            dispatch(TokenTemporarily(tokenDetails));
+            navigate("/conformation", {
+              tokenDetails,
+            });
+          }
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(getUserDetailsFailedAction(error));
+      });
+  };
+}
+
+export function TokenTemporarily(tokenDetails) {
+  return {
+    type: CONNECTED_TO_Token,
+    payload: tokenDetails,
   };
 }
 
@@ -150,41 +206,7 @@ export function connectedToMetaMask(address, token, isAdmin) {
 }
 
 //Create function for requesting to connect with MetaMask
-export function connectToMetaMask(
-  navigate,
-  address,
-  token,
-  adminwalletaddress
-) {
-  return (dispatch) => {
-    window.ethereum.enable().then((accounts) => {
-      const decoded = jwt_decode(token);
-      const { exp } = decoded;
 
-      if (address.toLowerCase() === adminwalletaddress.toLowerCase()) {
-        let tokenDetails = {
-          token: token,
-          expiresIn: exp * 1000,
-          walletaddress: address,
-          isAdmin: true,
-        };
-        saveTokenInLocalStorage(tokenDetails);
-        dispatch(connectedToMetaMask(address, token, tokenDetails.isAdmin));
-        navigate("/admindashboard");
-      } else {
-        let tokenDetails = {
-          token: token,
-          expiresIn: exp * 1000,
-          walletaddress: address,
-          isAdmin: false,
-        };
-        saveTokenInLocalStorage(tokenDetails);
-        dispatch(connectedToMetaMask(address, token, false));
-        navigate("/dashboard");
-      }
-    });
-  };
-}
 export function SavedD(address, token) {
   return {
     type: CONNECTED_TO_Token,
