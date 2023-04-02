@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "../store/store";
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:4000`,
+  baseURL: `http://localhost:8080`,
   //baseURL: `https://api.bitx.gold`,
   //baseURL: `https://ill-veil-colt.cyclic.app`,
 });
@@ -27,16 +27,19 @@ export async function getDetailsforDashboard(wallet_address) {
     "/api/bonusrefreward/" + wallet_address
   );
 
+  const data8 = await axiosInstance.get("/api/usdt/" + wallet_address);
+  const data9 = await axiosInstance.get("/api/bnb/" + wallet_address);
+
   var referalbonus = 0;
   var stakingreferbonus = 0;
   data6.data
-    .filter((item) => item.refer_code?.toLowerCase() === wallet_address)
+    .filter((item) => item?.referer_userId === wallet_address)
     .map((item) => {
       stakingreferbonus = stakingreferbonus + item.reward;
     });
 
   data7.data
-    .filter((item) => item.refer_code?.toLowerCase() === wallet_address)
+    .filter((item) => item?.referer_userId === wallet_address)
     .map((item) => {
       referalbonus = referalbonus + item.reward;
     });
@@ -47,6 +50,8 @@ export async function getDetailsforDashboard(wallet_address) {
     totalEarning: data1.data.total_claim_reward,
     referalBonus: referalbonus,
     stakingReferralBonus: stakingreferbonus,
+    usdt: data8.data.usdt,
+    bnb: data9.data.bnb,
   };
 }
 
@@ -67,13 +72,13 @@ export const GetValuesForStakePage = async (walletAddress) => {
   const data = await axiosInstance.get("/api/stakehistory/" + walletAddress);
 
   let stakedData = data?.data
-    ?.filter((item) => item.type === "Stake")
+    ?.filter((item) => item.type === "stake")
     .reverse();
 
   //filter data.data and add all the bxg values and set it to totalamountclaimed
   var amountclaimed = filterArrayAndReturnTotal(data.data, "claim");
-  var amountstaked = filterArrayAndReturnTotal(data.data, "Stake");
-  amountstaked = amountstaked + filterArrayAndReturnTotal(data.data, "Staked");
+  var amountstaked = filterArrayAndReturnTotal(data.data, "stake");
+  amountstaked = amountstaked + filterArrayAndReturnTotal(data.data, "staked");
 
   return {
     stakedData,
@@ -119,7 +124,7 @@ export const GetValuesForReferPage = async (walletAddress) => {
     level1count,
     level2count,
     level3count,
-    referalData: data,
+    referalData: data.filter((item) => item?.type === "claimed"),
   };
 };
 
@@ -129,13 +134,13 @@ export const CountLevels = (data, walletAddress) => {
   var level3 = 0;
 
   data.map((item) => {
-    if (item?.refer1?.toLowerCase() === walletAddress) {
+    if (item?.referer1_userId === walletAddress) {
       level1 = level1 + 1;
     }
-    if (item?.refer2?.toLowerCase() === walletAddress) {
+    if (item?.referer2_userId === walletAddress) {
       level2 = level2 + 1;
     }
-    if (item?.refer3?.toLowerCase() === walletAddress) {
+    if (item?.referer3_userId === walletAddress) {
       level3 = level3 + 1;
     }
   });
@@ -152,15 +157,29 @@ export const GetValuesForBonusPage = async (walletAddress) => {
   const { data } = await axiosInstance.get(
     "/api/bonusrefreward/" + walletAddress
   );
+  console.log(data);
   const isreferedData = await axiosInstance.get(
     "/api/bonusrefer/" + walletAddress
   );
   if (isreferedData.data.isRefered) {
-    referCode = isreferedData.data.refer_code;
+    console.log(isreferedData.data.refererUser.wallet_public_key);
+    referCode = isreferedData.data.refererUser.wallet_public_key;
   }
   return {
     referCode,
     referalData: data,
+  };
+};
+
+export const FetchBalances = async (id) => {
+  const data8 = await axiosInstance.get("/api/usdt/" + id);
+  const data9 = await axiosInstance.get("/api/bnb/" + id);
+  const { data } = await axiosInstance.get("/api/bxg/" + id);
+
+  return {
+    usdt: data8.data.usdt,
+    bnb: data9.data.bnb,
+    bxg: data.bxg,
   };
 };
 
