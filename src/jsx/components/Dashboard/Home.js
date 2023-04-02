@@ -16,21 +16,23 @@ const Home = () => {
   const [referralBonus, setreferralBonus] = useState(null);
   const [stakingreferralBonus, setStakingReferralBonus] = useState(null);
   const [totalEarning, settotalEarning] = useState(null);
+  const [bnb, setBnb] = useState(null);
+  const [usdt, setUsdt] = useState(null);
   const [loader, setLoader] = useState(false);
   const state = useSelector((state) => state);
   const { t } = useTranslation();
   const FetchData = async () => {
-    console.log(state.auth.auth, "state.auth.auth");
+    console.log(state.auth.userDetails, "state.auth.userDetails");
     setLoader(true);
     try {
-      const response = await getDetailsforDashboard(
-        state.auth.auth.walletaddress
-      );
+      const response = await getDetailsforDashboard(state.auth.userDetails.id);
       setbxgavailable(response.availableBXG);
       setbxgstacked(response.bxgStaked);
       settotalEarning(response.totalEarning);
       setreferralBonus(response.referalBonus);
       setStakingReferralBonus(response.stakingReferralBonus);
+      setUsdt(response.usdt);
+      setBnb(response.bnb);
     } catch (err) {
       swal("Error", err.message, "error");
     }
@@ -76,6 +78,8 @@ const Home = () => {
                   totalEarning={totalEarning}
                   referralBonus={referralBonus}
                   stakingreferralBonus={stakingreferralBonus}
+                  usdt={usdt}
+                  bnb={bnb}
                 />
               </div>
             </div>
