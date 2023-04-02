@@ -79,12 +79,20 @@ const UsdtTab = ({ acceptedData, to, handleConnectClick }) => {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   {state.auth.auth.isAdmin ? (
-                    <Link
-                      onClick={() => {
-                        handleConnectClick(item.user_id);
-                      }}>
-                      <td>{item.user.wallet_public_key}</td>
-                    </Link>
+                    <td>
+                      <Link
+                        onClick={() => {
+                          handleConnectClick(item.user_id);
+                        }}>
+                        {item.user.wallet_public_key}{" "}
+                        {item.user.wallet_public_key ===
+                        state.auth.userDetails.wallet_public_key ? (
+                          <Badge className="mx-3" bg="success">
+                            {t("Admin")}
+                          </Badge>
+                        ) : null}
+                      </Link>
+                    </td>
                   ) : (
                     <td>{item.user.wallet_public_key}</td>
                   )}
