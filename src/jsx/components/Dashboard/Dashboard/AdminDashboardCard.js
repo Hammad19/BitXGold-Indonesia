@@ -5,7 +5,9 @@ export default function AdminDashboardCard(props) {
   const { t } = useTranslation();
   return (
     <div
-      className={`col-xl-${props.col}  col-lg-${props.col} col-sm-${props.col}`}>
+      className={`col-xl-${props.col}  col-lg-${props.col * 2} col-sm-${
+        props.col * 3
+      } col-md-${props.col * 2}`}>
       <div className="widget-stat card">
         <div className="card-body  p-4">
           <div className="media ai-icon">
