@@ -57,18 +57,18 @@ npm i
 npm start
 ```
 
-Then open `http://localhost:4000` in your browser.
+Then open `http://localhost:8080` in your browser.
 
 ### npm scripts
 
 Here are some key scripts you'll use during development. Be sure to look to our `package.json` for a complete list of scripts.
 
-| Script | Description |
-| --- | --- |
-| `start` | Alias for running `docs-serve` |
-| `docs-serve` | Starts a local Hugo server |
-| `pages` | Generates permalink pages for each icon with template Markdown |
-| `icons` | Processes and optimizes SVGs in `icons` directory |
+| Script       | Description                                                    |
+| ------------ | -------------------------------------------------------------- |
+| `start`      | Alias for running `docs-serve`                                 |
+| `docs-serve` | Starts a local Hugo server                                     |
+| `pages`      | Generates permalink pages for each icon with template Markdown |
+| `icons`      | Processes and optimizes SVGs in `icons` directory              |
 
 ## Adding SVGs
 
