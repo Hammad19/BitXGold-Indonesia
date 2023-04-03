@@ -115,5 +115,6 @@
     "admin_withdraw": "Withdraw",
     "totalbxginadminwallet": "Total BXG In Admin Wallet",
     "totalusdtinadminwallet": "Total USDT In Admin Wallet",
-    "totalbnbinadminwallet": "Total BNB In Admin Wallet"
+    "totalbnbinadminwallet": "Total BNB In Admin Wallet",
+    "deposit": "Deposit"
 }

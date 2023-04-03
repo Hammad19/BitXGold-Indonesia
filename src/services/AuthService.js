@@ -9,14 +9,15 @@ import {
   saveSigner,
 } from "../store/actions/AuthActions";
 
-const baseUrl = "http://localhost:8080";
+const baseUrl = "https://bitxbackend.herokuapp.com";
 
-export function signUp(user_name, email, password) {
+export function signUp(user_name, email, password, contact) {
   //axios call
   const postData = {
     user_name,
     email,
     password,
+    contact,
   };
   return axios.post(`${baseUrl}/api/auth/register`, postData);
 }

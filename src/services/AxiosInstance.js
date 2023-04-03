@@ -2,9 +2,9 @@ import axios from "axios";
 import { store } from "../store/store";
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:8080`,
+  //baseURL: `http://localhost:8080`,
   //baseURL: `https://api.bitx.gold`,
-  //baseURL: `https://ill-veil-colt.cyclic.app`,
+  baseURL: `https://bitxbackend.herokuapp.com`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -27,13 +27,18 @@ export async function getDetailsforDashboard(wallet_address) {
     "/api/bonusrefreward/" + wallet_address
   );
 
+  console.log(data7.data, "data7.data");
+
   const data8 = await axiosInstance.get("/api/usdt/" + wallet_address);
   const data9 = await axiosInstance.get("/api/bnb/" + wallet_address);
 
   var referalbonus = 0;
   var stakingreferbonus = 0;
   data6.data
-    .filter((item) => item?.referer_userId === wallet_address)
+    .filter(
+      (item) =>
+        item?.referer_userId === wallet_address && item?.type === "claimed"
+    )
     .map((item) => {
       stakingreferbonus = stakingreferbonus + item.reward;
     });
@@ -43,6 +48,8 @@ export async function getDetailsforDashboard(wallet_address) {
     .map((item) => {
       referalbonus = referalbonus + item.reward;
     });
+
+  console.log(data8.data.usdt, "usdt");
 
   return {
     availableBXG: data.bxg,

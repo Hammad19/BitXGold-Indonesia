@@ -27,9 +27,6 @@ const Deposit = () => {
   const [loader, setloader] = useState(false);
   //42 number walletaddres
 
-  const [walletAddress, setWalletAddress] = useState(
-    "0x8f7c9e523233023021321323wdw232839sd98"
-  );
   const state = useSelector((state) => state);
 
   const { changeBackground } = useContext(ThemeContext);
@@ -71,7 +68,7 @@ const Deposit = () => {
                 <br></br>
 
                 <div
-                  className="col-xl-4"
+                  className="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4"
                   style={{
                     height: "auto",
                     margin: "0 auto",
@@ -81,7 +78,7 @@ const Deposit = () => {
                     className="my-4"
                     size={1000}
                     style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                    value={walletAddress}
+                    value={state.auth.userDetails.wallet_public_key}
                     viewBox={`0 0 256 256`}
                   />
                   <br></br>
@@ -93,21 +90,23 @@ const Deposit = () => {
                   style={{
                     justifyContent: "center",
                   }}>
-                  <div className="col-xl-6">
+                  <div className="col-xl-7">
                     <div className="form-group">
                       <div className="input-group">
                         <input
                           disabled
                           type="text"
                           className="form-control"
-                          value={walletAddress}
-                          onChange={(e) => setWalletAddress(e.target.value)}
+                          value={state.auth.userDetails.wallet_public_key}
+                          //onChange={(e) => setWalletAddress(e.target.value)}
                         />
                         <div className="input-group-append">
                           <button
                             className="btn btn-primary"
                             onClick={() => {
-                              navigator.clipboard.writeText(walletAddress);
+                              navigator.clipboard.writeText(
+                                state.auth.userDetails.wallet_public_key
+                              );
                               toast.success("Copied to clipboard");
                             }}>
                             {"Copy"}

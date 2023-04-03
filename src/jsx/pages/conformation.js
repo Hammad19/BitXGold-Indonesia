@@ -175,7 +175,9 @@ const Conformation = (props) => {
         handleClose();
         setLoader(false);
 
-        dispatch(Logout(navigate));
+        setTimeout(() => {
+          dispatch(Logout(navigate));
+        }, 1000);
       } else {
         toast.error(data.message);
         setLoader(false);

@@ -20,10 +20,6 @@ const SwiperSlider = ({
           slidesPerView={3}
           spaceBetween={20}
           loop={false}
-          //autoplay= {{
-          //delay: 1200,
-          //}}
-          //modules={[ Autoplay ]}
           breakpoints={{
             300: {
               slidesPerView: 1,
@@ -58,7 +54,7 @@ const SwiperSlider = ({
           </SwiperSlide>
           <SwiperSlide>
             <SwiperSlideCard
-              amount={Math.round(referralBonus * 100) / 100}
+              amount={referralBonus}
               translateKey="dashboard_card_3"
               currency=" USDT"
             />
@@ -96,7 +92,7 @@ const SwiperSlider = ({
           }}>
           <SwiperSlide>
             <SwiperSlideCard
-              amount={Math.round(stakingreferralBonus * 100) / 100}
+              amount={stakingreferralBonus}
               translateKey="dashboard_card_4"
               currency=" BXG"
             />

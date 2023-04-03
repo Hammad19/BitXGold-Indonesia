@@ -84,7 +84,7 @@ const Stake = () => {
       //if staked once then call stake function else call stakeAndClaim function
       var check = await checkStake();
       if (!check) {
-        if (amountToStake < 1) {
+        if (amountToStake < 0) {
           setLoader(false);
           toast.error("Minimum amount to stake is 20 BXG", {
             position: "top-center",

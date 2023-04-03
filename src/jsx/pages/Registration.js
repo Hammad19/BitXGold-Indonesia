@@ -9,6 +9,7 @@ import {
 
 import logo from "../../images/logo/logo-full.png";
 import bg6 from "../../images/background/bg6.jpg";
+import CountryCodePicker from "../components/PhoneInput/CountryCodePicker";
 
 function Register(props) {
   const [heartActive, setHeartActive] = useState(true);
@@ -17,7 +18,9 @@ function Register(props) {
   let errorsObj = { email: "", password: "" };
   const [errors, setErrors] = useState(errorsObj);
   const [password, setPassword] = useState("");
+
   const [userName, setUserName] = useState("");
+  const [contact, setContact] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,10 +42,15 @@ function Register(props) {
       errorObj.password = "Password is Required";
       error = true;
     }
+
+    if (contact === "") {
+      errorObj.contact = "Phone Number is Required";
+      error = true;
+    }
     setErrors(errorObj);
     if (error) return;
     dispatch(loadingToggleAction(true));
-    dispatch(signupAction(userName, email, password, navigate));
+    dispatch(signupAction(userName, email, password, contact, navigate));
   }
 
   return (
@@ -138,6 +146,21 @@ function Register(props) {
                                   {errors.email && (
                                     <div className="text-danger fs-12">
                                       {errors.email}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="form-group mt-3">
+                                  {/* <input name="dzName" required="" className="form-control" placeholder="Email Address" type="text" /> */}
+
+                                  <CountryCodePicker
+                                    whatsapp={contact}
+                                    setwhatsapp={setContact}
+                                  />
+
+                                  {errors.contact && (
+                                    <div className="text-danger fs-12">
+                                      {errors.contact}
                                     </div>
                                   )}
                                 </div>

@@ -29,6 +29,8 @@ const Home = () => {
       setbxgavailable(response.availableBXG);
       setbxgstacked(response.bxgStaked);
       settotalEarning(response.totalEarning);
+
+      console.log(response.referalBonus, "response");
       setreferralBonus(response.referalBonus);
       setStakingReferralBonus(response.stakingReferralBonus);
       setUsdt(response.usdt);

@@ -34,9 +34,9 @@ export function saveSigner(signer, account, provider, isLoggedInFromMobile) {
   };
 }
 
-export function signupAction(user_name, email, password, navigate) {
+export function signupAction(user_name, email, password, contact, navigate) {
   return (dispatch) => {
-    signUp(user_name, email, password)
+    signUp(user_name, email, password, contact)
       .then((response) => {
         dispatch(confirmedSignupAction(response.data));
         navigate("/login");
