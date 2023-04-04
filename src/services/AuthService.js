@@ -2,11 +2,9 @@ import axios from "axios";
 import { ethers } from "ethers/lib";
 import swal from "sweetalert";
 import {
-  getUserDetailsAction,
   getUserDetailsConfirmedAction,
   loginConfirmedAction,
   Logout,
-  saveSigner,
 } from "../store/actions/AuthActions";
 
 const baseUrl = "https://bitxbackend.herokuapp.com";
@@ -20,6 +18,33 @@ export function signUp(user_name, email, password, contact) {
     contact,
   };
   return axios.post(`${baseUrl}/api/auth/register`, postData);
+}
+
+export async function saveRef(user_id, refer_code) {
+  try {
+    const requestBody = {
+      user_id: user_id,
+      refer_code: refer_code,
+    };
+    const { data } = await axios
+      .post(`${baseUrl}/api/bonusrefer/`, requestBody)
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(data, "data bonus");
+    if (data === "Refere Added Successfully.") {
+      const { data } = await axios
+        .post(`${baseUrl}/api/refer/`, requestBody)
+        .catch((err) => {
+          console.log(err);
+        });
+      console.log(data, "data refer");
+    } else {
+      return data.message;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export function login(email, password) {

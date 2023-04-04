@@ -1,5 +1,7 @@
 import axios from "axios";
 import { store } from "../store/store";
+import { ethers } from "ethers";
+import bitxGoldSwap from "../../src/contractAbis/BitXGoldSwap.json";
 
 const axiosInstance = axios.create({
   //baseURL: `http://localhost:8080`,
@@ -63,14 +65,17 @@ export async function getDetailsforDashboard(wallet_address) {
 }
 
 export const getChangedValue = async () => {
-  const { data } = await axios.get("https://www.goldapi.io/api/XAU/USD", {
-    headers: {
-      "x-access-token": "goldapi-4qjyptlcn9gjtf-io",
-      "Content-Type": "application/json",
-    },
-  });
+  const provider = new ethers.getDefaultProvider(
+    "https://bsc-dataseed1.binance.org/"
+  );
+  const bitXSwap = new ethers.Contract(
+    bitxGoldSwap.address,
+    bitxGoldSwap.abi,
+    provider
+  );
+  const ratio = await bitXSwap.getRatio();
 
-  return data["price_gram_24k"];
+  return ethers.utils.formatUnits(ratio);
 };
 
 export const GetValuesForStakePage = async (walletAddress) => {

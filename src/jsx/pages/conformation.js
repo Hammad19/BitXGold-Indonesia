@@ -25,41 +25,6 @@ const Conformation = (props) => {
   const handleShow = () => setShow(true);
   const state = useSelector((state) => state);
 
-  async function getRef() {
-    const requestBody = {
-      user_id: props.tokenData.id,
-      refer_code: referalAddress,
-    };
-
-    const { data } = await axiosInstance
-      .post("/api/refer/check", requestBody)
-      .catch((err) => {
-        toast.error(err.response.data.message, {
-          position: "top-center",
-        });
-        setLoader(false);
-      });
-    if (!data) {
-      toast.error(data.message, {
-        position: "top-center",
-      });
-      setLoader(false);
-      return;
-    }
-
-    const referalAddressarray = [
-      data.data.refer1
-        ? data.data.refer1
-        : "0x0000000000000000000000000000000000000000",
-      data.data.refer2
-        ? data.data.refer2
-        : "0x0000000000000000000000000000000000000000",
-      data.data.refer3
-        ? data.data.refer3
-        : "0x0000000000000000000000000000000000000000",
-    ];
-    return referalAddressarray;
-  }
   async function checkDB() {
     const requestBody = {
       wallet_address: referalAddress,

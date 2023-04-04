@@ -329,7 +329,7 @@ const AdminHome = () => {
                                   <td>{index + 1}</td>
                                   <td>{item.wallet_address}</td>
                                   <td>{item.email}</td>
-                                  <td>{item.contact}</td>
+                                  <td>+{item.contact}</td>
                                   <td>{item.bxg ? item.bxg : "0"}</td>
                                 </tr>
                               ))}

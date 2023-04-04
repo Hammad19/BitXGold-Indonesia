@@ -103,6 +103,13 @@ export const MenuList = [
         to: "withdraw-history",
         key: "withdraw_history",
       },
+
+      // {
+      //   title: "Deposit History",
+      //   iconStyle: <i className="material-icons">grid_view</i>,
+      //   to: "deposit-history",
+      //   key: "deposit_history",
+      // },
     ],
   },
 

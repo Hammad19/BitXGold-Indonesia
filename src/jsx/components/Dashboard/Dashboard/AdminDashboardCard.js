@@ -14,7 +14,9 @@ export default function AdminDashboardCard(props) {
             <span className="me-3 bgl-danger text-danger">{props.svg}</span>
             <div className="media-body">
               <p className="mb-1"> {t(props.translateKey)} </p>
-              <h4 className="mb-0">{Math.round(props.bxg * 100) / 100}</h4>
+              <h4 className="mb-0">
+                {Math.round(props.bxg * 100000) / 100000}
+              </h4>
             </div>
           </div>
         </div>

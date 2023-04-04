@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   loadingToggleAction,
   signupAction,
@@ -10,10 +10,16 @@ import {
 import logo from "../../images/logo/logo-full.png";
 import bg6 from "../../images/background/bg6.jpg";
 import CountryCodePicker from "../components/PhoneInput/CountryCodePicker";
+import { Toaster, toast } from "react-hot-toast";
+
+import axiosInstance from "../../services/AxiosInstance";
 
 function Register(props) {
   const [heartActive, setHeartActive] = useState(true);
 
+  const [referalAddress, setreferalAddress] = useState(
+    "0x97A760EeD672A22c0B782F813F30598B8f994038"
+  );
   const [email, setEmail] = useState("");
   let errorsObj = { email: "", password: "" };
   const [errors, setErrors] = useState(errorsObj);
@@ -24,6 +30,56 @@ function Register(props) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const state = useSelector((state) => state);
+
+  async function checkDB() {
+    const requestBody = {
+      wallet_address: referalAddress,
+    };
+
+    const { data } = await axiosInstance
+      .post(
+        "/api/bonusrefer/check",
+
+        requestBody
+      )
+      .catch((err) => {
+        toast.error("not in chain", {
+          position: "top-center",
+        });
+        return false;
+      });
+
+    console.log(data, "data");
+    if (data) {
+      return data.status;
+    }
+  }
+
+  const getReferalBonus = async () => {
+    const status = await checkDB();
+    if (status) {
+      dispatch(loadingToggleAction(true));
+      const beingdispatched = dispatch(
+        signupAction(
+          userName,
+          email,
+          password,
+          contact,
+          referalAddress,
+          navigate
+        )
+      );
+
+      console.log(beingdispatched, "beingdispatched");
+    } else {
+      toast.error("Please Enter Valid Referal Code", {
+        style: { minWidth: 180 },
+        position: "top-center",
+      });
+    }
+  };
 
   function onSignUp(e) {
     e.preventDefault();
@@ -47,14 +103,19 @@ function Register(props) {
       errorObj.contact = "Phone Number is Required";
       error = true;
     }
+    if (referalAddress === "") {
+      errorObj.referalAddress = "Referal Address is Required";
+      error = true;
+    }
+
     setErrors(errorObj);
     if (error) return;
-    dispatch(loadingToggleAction(true));
-    dispatch(signupAction(userName, email, password, contact, navigate));
+    getReferalBonus();
   }
 
   return (
     <>
+      <Toaster />
       <div className="page-wraper">
         <div className="browse-job login-style3">
           <div
@@ -116,6 +177,30 @@ function Register(props) {
                                   <div className="dz-separator bg-primary style-liner"></div>
                                 </div>
                                 <p>Enter your personal details below: </p>
+
+                                <div className="form-group mt-3">
+                                  <label>
+                                    If you don't have any refferal address
+                                    please use this :
+                                  </label>
+                                  <label className="text-white">
+                                    {state.auth.defultReffer}
+                                  </label>
+                                  {/* <input name="dzName" required="" className="form-control" placeholder="Email Address" type="text" /> */}
+                                  <input
+                                    value={referalAddress}
+                                    onChange={(e) =>
+                                      setreferalAddress(e.target.value)
+                                    }
+                                    className="form-control"
+                                    placeholder="0x00000000000000"
+                                  />
+                                  {errors.referalAddress && (
+                                    <div className="text-danger fs-12">
+                                      {errors.referalAddress}
+                                    </div>
+                                  )}
+                                </div>
 
                                 <div className="form-group mt-3">
                                   <input

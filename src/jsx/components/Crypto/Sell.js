@@ -29,9 +29,7 @@ const Sell = () => {
   const [loader, setLoader] = useState(false);
   // create a static value of 0.16130827463
   const [value, setValue] = React.useState(0);
-  const [totalbxgvalue, settotalBxgvalue] = React.useState(
-    (Usd * value).toFixed(2)
-  );
+  const [totalbxgvalue, settotalBxgvalue] = React.useState(Usd * value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,7 +42,7 @@ const Sell = () => {
       const value = await getChangedValue();
 
       if (value) {
-        setValue(value / 10);
+        setValue(value);
       }
       setLoader(false);
     } catch (err) {
@@ -118,7 +116,7 @@ const Sell = () => {
   };
 
   useEffect(() => {
-    settotalBxgvalue((Usd * value).toFixed(2));
+    settotalBxgvalue(Usd * value);
   }, [Usd]);
   return (
     <>

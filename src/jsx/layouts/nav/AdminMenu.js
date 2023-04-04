@@ -52,6 +52,14 @@ export const AdminMenuList = [
     key: "admin_withdraw_history",
   },
 
+  // {
+  //   title: "Deposit History",
+  //   //classsChange: 'mm-collapse',
+  //   iconStyle: <i className="material-icons">currency_bitcoin</i>,
+  //   to: "admin-deposit-history",
+  //   key: "admin_deposit_history",
+  // },
+
   //Settings
   {
     title: "Settings",

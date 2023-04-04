@@ -39,10 +39,12 @@ const Buy = () => {
       const value = await getChangedValue();
 
       if (value) {
-        setValue(value / 10);
+        console.log(value);
+        setValue(value);
       }
       setloader(false);
     } catch (err) {
+      console.log(err);
       toast.error("Server Error", {
         position: "top-center",
         style: { minWidth: 180 },
@@ -108,7 +110,7 @@ const Buy = () => {
   };
 
   useEffect(() => {
-    setTotalUsd((bxgvalue * value).toFixed(2));
+    setTotalUsd(bxgvalue * value);
   }, [bxgvalue]);
   return (
     <>

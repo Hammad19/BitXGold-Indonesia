@@ -9,6 +9,7 @@ import {
   login,
   runLogoutTimer,
   savedetails,
+  saveRef,
   saveTokenInLocalStorage,
   signUp,
 } from "../../services/AuthService";
@@ -34,13 +35,23 @@ export function saveSigner(signer, account, provider, isLoggedInFromMobile) {
   };
 }
 
-export function signupAction(user_name, email, password, contact, navigate) {
+export function signupAction(
+  user_name,
+  email,
+  password,
+  contact,
+  referalAddress,
+  navigate
+) {
   return (dispatch) => {
     signUp(user_name, email, password, contact)
       .then((response) => {
+        saveRef(response.data.user_id, referalAddress);
         dispatch(confirmedSignupAction(response.data));
         navigate("/login");
         //history.push('/dashboard');
+
+        return response.data;
       })
       .catch((error) => {
         console.log(error);

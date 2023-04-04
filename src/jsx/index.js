@@ -63,6 +63,7 @@ import AdminStakeHistory from "./components/Crypto/AdminStakeHistory";
 import SettingAdmin from "./layouts/SettingAdmin";
 import Deposit from "./components/Crypto/Deposit";
 import Withdraw from "./components/Crypto/Withdraw";
+import DepositHistory from "./components/Crypto/DepositHistory";
 const allroutesMain = [
   /// Dashboard
   { url: "", component: <Home />, admin: false },
@@ -82,6 +83,7 @@ const allroutesMain = [
   { url: "buy-history", component: <BuyHistory />, admin: false },
   { url: "stake-history", component: <StakeHistory />, admin: false },
   { url: "withdraw-history", component: <WithdrawHistory />, admin: false },
+  { url: "deposit-history", component: <DepositHistory />, admin: false },
 
   //admin
   { url: "admindashboard", component: <AdminHome />, admin: true },
@@ -94,11 +96,18 @@ const allroutesMain = [
     component: <WithdrawHistory />,
     admin: true,
   },
+
+  {
+    url: "admin-deposit-history",
+    component: <DepositHistory />,
+    admin: true,
+  },
   {
     url: "admin-withdraw",
     component: <Withdraw />,
     admin: true,
   },
+
   //admin
 
   { url: "profile", component: <EditProfile />, admin: false },
