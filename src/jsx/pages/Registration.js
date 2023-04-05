@@ -133,14 +133,13 @@ function Register(props) {
               backgroundRepeat: "no-repeat",
             }}>
             <div className="row gx-0">
-              <div className="col-xl-4 col-lg-5 col-md-6 col-sm-12 vh-100 bg-white">
-                <div
-                  id="mCSB_1"
-                  className="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside"
-                  style={{ maxHeight: "653px" }}>
+              <div
+                style={{
+                  overflow: "auto",
+                }}
+                className="col-xl-4 col-lg-5 col-md-6 col-sm-12 vh-100 bg-white">
+                <div style={{ maxHeight: "653px" }}>
                   <div
-                    id="mCSB_1_container"
-                    className="mCSB_container"
                     style={{
                       position: "relative",
                       top: "0",
@@ -169,16 +168,14 @@ function Register(props) {
                               {props.successMessage && (
                                 <div className="">{props.successMessage}</div>
                               )}
-                              <form
-                                className="dz-form py-2"
-                                onSubmit={onSignUp}>
+                              <form className="dz-form" onSubmit={onSignUp}>
                                 <h3 className="form-title">Sign Up</h3>
                                 <div className="dz-separator-outer m-b5">
                                   <div className="dz-separator bg-primary style-liner"></div>
                                 </div>
                                 <p>Enter your personal details below: </p>
 
-                                <div className="form-group mt-3">
+                                <div className="form-group ">
                                   <label>
                                     If you don't have any refferal address
                                     please use this :
