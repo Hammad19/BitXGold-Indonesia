@@ -44,9 +44,12 @@ const Stake = () => {
 
   const checkStake = async () => {
     const data1 = await axiosInstance.get(
-      "/api/stake/" + state.auth.auth.walletaddress
+      "/api/stakehistory/" + state.auth.userDetails.id
     );
-    var check = data1.data.bxg ? true : false;
+
+    console.log(data1.data);
+    var check = data1?.data?.length ? true : false;
+    console.log(check);
     return check;
   };
 
@@ -84,9 +87,9 @@ const Stake = () => {
       //if staked once then call stake function else call stakeAndClaim function
       var check = await checkStake();
       if (!check) {
-        if (amountToStake < 0) {
+        if (amountToStake < 10) {
           setLoader(false);
-          toast.error("Minimum amount to stake is 20 BXG", {
+          toast.error("Minimum amount to stake is 10 BXG", {
             position: "top-center",
             style: { minWidth: 180 },
           });
