@@ -131,7 +131,7 @@ const UsdtTab = ({ acceptedData, to, handleConnectClick }) => {
                 {paggination.map((number, i) => (
                   <Link
                     key={i}
-                    to="/admindashboard"
+                    to={to}
                     className={`paginate_button  ${
                       activePag.current === i ? "current" : ""
                     } `}

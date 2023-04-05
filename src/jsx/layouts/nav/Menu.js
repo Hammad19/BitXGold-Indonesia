@@ -112,12 +112,4 @@ export const MenuList = [
       // },
     ],
   },
-
-  //Settings
-  // {
-  //     title:'Settings',
-  //     //classsChange: 'mm-collapse',
-  //     iconStyle: <i className="bi bi-gear-wide"></i>,
-  //     to: 'transactions-history',
-  // },
 ];
