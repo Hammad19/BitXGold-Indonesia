@@ -85,17 +85,17 @@ const Stake = () => {
     } else {
       //check if the user has staked once or not
       //if staked once then call stake function else call stakeAndClaim function
-      var check = await checkStake();
-      if (!check) {
-        if (amountToStake < 10) {
-          setLoader(false);
-          toast.error("Minimum amount to stake is 10 BXG", {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
-          return;
-        }
-      }
+      // var check = await checkStake();
+      // if (!check) {
+      //   if (amountToStake < 10) {
+      //     setLoader(false);
+      //     toast.error("Minimum amount to stake is 10 BXG", {
+      //       position: "top-center",
+      //       style: { minWidth: 180 },
+      //     });
+      //     return;
+      //   }
+      // }
       try {
         const requestBody = {
           user_id: state.auth.userDetails.id,
