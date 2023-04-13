@@ -17,6 +17,7 @@ import { isAuthenticated } from "./store/selectors/AuthSelectors";
 import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 import "./css/style.css";
 import Conformation from "./jsx/pages/conformation";
+import ResetPassword from "./jsx/pages/ResetPassword";
 
 const ForgotPassword = lazy(() => import("./jsx/pages/ForgotPassword"));
 const Login = lazy(() => {
@@ -50,6 +51,8 @@ function App(props) {
       <Route path="/login" element={<Login />} />
       <Route path="/page-register" element={<SignUp />} />
       <Route path="/conformation" element={<Conformation />} />
+      <Route path="/forgetpassword" element={<ForgotPassword />} />
+      <Route path="/verification" element={<ResetPassword />} />
       {/* <Route path='/page-forgot-password' element={<ForgotPassword />} /> */}
     </Routes>
   );

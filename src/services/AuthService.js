@@ -7,7 +7,8 @@ import {
   Logout,
 } from "../store/actions/AuthActions";
 
-const baseUrl = "https://bitxbackend.herokuapp.com";
+// const baseUrl = "https://bitxbackend.herokuapp.com";
+const baseUrl = "http://localhost:8080";
 
 export function signUp(user_name, email, password, contact) {
   //axios call

@@ -174,7 +174,7 @@ const Stake = () => {
     let string1 = "";
     const currentTime = new Date();
     const difference = currentTime - startTimeObject;
-    //const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
+    const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
     const days = Math.floor(
       (difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
     );
@@ -184,7 +184,7 @@ const Stake = () => {
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-    string1 = `${days}d ${hours}h ${minutes}m ${seconds}s `;
+    string1 = `${months}m ${days}d ${hours}h ${minutes}m ${seconds}s `;
 
     return string1;
   };

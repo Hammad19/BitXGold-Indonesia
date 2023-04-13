@@ -100,19 +100,38 @@ export function loginAction(email, password, navigate) {
     login(email, password)
       .then((response) => {
         console.log(response.data);
-        const decoded = jwt_decode(response.data.access);
 
-        console.log(decoded, "decoded");
-        let tokenDetails = {
-          id: decoded.id,
-          token: response.data.access,
-          expiresIn: decoded.exp * 1000,
-          isAdmin: decoded.is_admin,
-        };
+        if (response.data.status) {
+          const decoded = jwt_decode(response.data.access);
 
-        dispatch(
-          getUserDetailsAction(tokenDetails, decoded.is_admin, navigate)
-        );
+          console.log(decoded, "decoded");
+          let tokenDetails = {
+            id: decoded.id,
+            token: response.data.access,
+            expiresIn: decoded.exp * 1000,
+            isAdmin: decoded.is_admin,
+          };
+
+          dispatch(
+            getUserDetailsAction(tokenDetails, decoded.is_admin, navigate)
+          );
+        } else {
+          if (response.data.message === "Email is not verified.") {
+            navigate("/verification", {
+              state: {
+                email,
+              },
+            });
+            swal("Oops", response.data.message, "error", {
+              button: "Try Again!",
+            });
+          } else {
+            swal("Oops", response.data.message, "error", {
+              button: "Try Again!",
+            });
+          }
+          return;
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -134,7 +153,7 @@ export function getUserDetailsAction(tokenDetails, isAdmin, navigate) {
   return (dispatch) => {
     getUserDetails(tokenDetails.token, tokenDetails.id)
       .then((response) => {
-        console.log(response.data, "response.data");
+        console.log(response.data, "response.data get user details");
         dispatch(getUserDetailsConfirmedAction(response.data));
         isAlreadyReferred(response.data.id, tokenDetails.token).then((res) => {
           if (res.data.isRefered) {

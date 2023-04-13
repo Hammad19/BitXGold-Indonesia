@@ -190,10 +190,12 @@ function Login(props) {
                                     Remember me
                                   </label>
                                 </span>
-                                {/* <Link to={"#"}  className="nav-link m-auto btn tp-btn-light btn-primary">
-																	Forget Password ?
-																</Link> 	 */}
                               </div>
+                              <Link
+                                to={"/forgetpassword"}
+                                className="nav-link m-auto btn tp-btn-light btn-primary">
+                                Forget Password ?
+                              </Link>
                             </form>
                             <div className="text-center bottom">
                               <NavLink

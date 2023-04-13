@@ -4,9 +4,9 @@ import { ethers } from "ethers";
 import bitxGoldSwap from "../../src/contractAbis/BitXGoldSwap.json";
 
 const axiosInstance = axios.create({
-  //baseURL: `http://localhost:8080`,
+  baseURL: `http://localhost:8080`,
   //baseURL: `https://api.bitx.gold`,
-  baseURL: `https://bitxbackend.herokuapp.com`,
+  //baseURL: `https://bitxbackend.herokuapp.com`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
