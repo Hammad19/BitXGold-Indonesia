@@ -46,12 +46,17 @@ export function signupAction(
   return (dispatch) => {
     signUp(user_name, email, password, contact)
       .then((response) => {
-        saveRef(response.data.user_id, referalAddress);
-        dispatch(confirmedSignupAction(response.data));
-        navigate("/login");
         //history.push('/dashboard');
 
-        return response.data;
+        if (response.data.status) {
+          saveRef(response.data.user_id, referalAddress);
+          dispatch(confirmedSignupAction(response.data));
+          navigate("/login");
+        } else {
+          swal("Oops", response.data.message, "error", {
+            button: "Try Again!",
+          });
+        }
       })
       .catch((error) => {
         console.log(error);

@@ -4,13 +4,15 @@ import { ethers } from "ethers";
 import bitxGoldSwap from "../../src/contractAbis/BitXGoldSwap.json";
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:8080`,
+  //baseURL: `https://bright-yak-gabardine.cyclic.app`,
   //baseURL: `https://api.bitx.gold`,
-  //baseURL: `https://bitxbackend.herokuapp.com`,
+  baseURL: `https://bitxbackend.herokuapp.com`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
   const state = store.getState();
+
+  config.headers["Access-Control-Allow-Origin"] = "*";
 
   const token = state.auth.auth.idToken;
   if (token) {

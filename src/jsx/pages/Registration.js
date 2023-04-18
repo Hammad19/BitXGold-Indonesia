@@ -21,9 +21,10 @@ function Register(props) {
     "0x97A760EeD672A22c0B782F813F30598B8f994038"
   );
   const [email, setEmail] = useState("");
-  let errorsObj = { email: "", password: "" };
+  let errorsObj = { email: "", password: "", confirmpassword: "" };
   const [errors, setErrors] = useState(errorsObj);
   const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
 
   const [userName, setUserName] = useState("");
   const [contact, setContact] = useState("");
@@ -42,7 +43,12 @@ function Register(props) {
       .post(
         "/api/bonusrefer/check",
 
-        requestBody
+        requestBody,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
       )
       .catch((err) => {
         toast.error("not in chain", {
@@ -96,6 +102,10 @@ function Register(props) {
     }
     if (password === "") {
       errorObj.password = "Password is Required";
+      error = true;
+    }
+    if (password !== confirmpassword) {
+      errorObj.confirmpassword = "Password is not matching";
       error = true;
     }
 
@@ -250,6 +260,7 @@ function Register(props) {
                                 <div className="form-group mt-3">
                                   {/* <input name="dzName" required="" className="form-control" placeholder="Password" type="password" /> */}
                                   <input
+                                    type="password"
                                     value={password}
                                     onChange={(e) =>
                                       setPassword(e.target.value)
@@ -261,6 +272,25 @@ function Register(props) {
                                   {errors.password && (
                                     <div className="text-danger fs-12">
                                       {errors.password}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="form-group mt-3">
+                                  {/* <input name="dzName" required="" className="form-control" placeholder="Password" type="password" /> */}
+                                  <input
+                                    type="password"
+                                    value={confirmpassword}
+                                    onChange={(e) =>
+                                      setConfirmPassword(e.target.value)
+                                    }
+                                    className="form-control"
+                                    //defaultValue="Password"
+                                    placeholder="confirm password"
+                                  />
+                                  {errors.confirmpassword && (
+                                    <div className="text-danger fs-12">
+                                      {errors.confirmpassword}
                                     </div>
                                   )}
                                 </div>

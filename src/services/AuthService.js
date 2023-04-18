@@ -7,8 +7,9 @@ import {
   Logout,
 } from "../store/actions/AuthActions";
 
-// const baseUrl = "https://bitxbackend.herokuapp.com";
-const baseUrl = "http://localhost:8080";
+const baseUrl = "https://bitxbackend.herokuapp.com";
+
+//const baseUrl = "https://bright-yak-gabardine.cyclic.app";
 
 export function signUp(user_name, email, password, contact) {
   //axios call
@@ -18,7 +19,11 @@ export function signUp(user_name, email, password, contact) {
     password,
     contact,
   };
-  return axios.post(`${baseUrl}/api/auth/register`, postData);
+  return axios.post(`${baseUrl}/api/auth/register`, postData, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
 }
 
 export async function saveRef(user_id, refer_code) {
@@ -28,7 +33,11 @@ export async function saveRef(user_id, refer_code) {
       refer_code: refer_code,
     };
     const { data } = await axios
-      .post(`${baseUrl}/api/bonusrefer/`, requestBody)
+      .post(`${baseUrl}/api/bonusrefer/`, requestBody, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -53,13 +62,19 @@ export function login(email, password) {
     email,
     password,
   };
-  return axios.post(`${baseUrl}/api/auth/login`, postData);
+  return axios.post(`${baseUrl}/api/auth/login`, postData, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
 }
 
 export function getUserDetails(token, user_id) {
   return axios.get(`${baseUrl}/api/user/` + user_id, {
     headers: {
       Authorization: token,
+
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
@@ -68,6 +83,8 @@ export function isAlreadyReferred(id, token) {
   return axios.get(`${baseUrl}/api/bonusrefer/` + id, {
     headers: {
       Authorization: token,
+
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
