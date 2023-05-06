@@ -45,6 +45,18 @@ const Home = () => {
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
     FetchData();
+
+    if (
+      state.auth.userDetails.old_wallet_public_key === null ||
+      state.auth.userDetails.old_wallet_public_key === ""
+    ) {
+      toast.error(
+        "Please update your Old wallet address by Going In Profile Section ",
+        {
+          position: "bottom-center",
+        }
+      );
+    }
   }, []);
 
   return (
