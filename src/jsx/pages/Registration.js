@@ -13,15 +13,24 @@ import CountryCodePicker from "../components/PhoneInput/CountryCodePicker";
 import { Toaster, toast } from "react-hot-toast";
 
 import axiosInstance from "../../services/AxiosInstance";
+import Loader from "../components/Loader/Loader";
 
 function Register(props) {
   const [heartActive, setHeartActive] = useState(true);
+  const [loader, setLoader] = useState(false);
+
+  const [oldWalletAddress, setOldWalletAddress] = useState("");
 
   const [referalAddress, setreferalAddress] = useState(
     "0x97A760EeD672A22c0B782F813F30598B8f994038"
   );
   const [email, setEmail] = useState("");
-  let errorsObj = { email: "", password: "", confirmpassword: "" };
+  let errorsObj = {
+    email: "",
+    password: "",
+    confirmpassword: "",
+    oldwalletaddress: "",
+  };
   const [errors, setErrors] = useState(errorsObj);
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
@@ -51,6 +60,9 @@ function Register(props) {
         }
       )
       .catch((err) => {
+        //dispatch loadingtoggleacion
+
+        dispatch(loadingToggleAction(false));
         toast.error("not in chain", {
           position: "top-center",
         });
@@ -63,23 +75,68 @@ function Register(props) {
     }
   }
 
+  async function verifyOldWalletPublicKey() {
+    const requestBody = {
+      wallet_address: oldWalletAddress,
+    };
+
+    const { data } = await axiosInstance
+      .post(
+        "/api/auth/verifywallet",
+
+        requestBody,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      )
+      .catch((err) => {
+        toast.error("The old Wallet Address You Entered does not exist", {
+          position: "top-center",
+        });
+        return false;
+      });
+
+    //console.log(data, "data");
+    if (data) {
+      return data.status;
+    }
+  }
+
   const getReferalBonus = async () => {
+    dispatch(loadingToggleAction(true));
     const status = await checkDB();
     if (status) {
-      dispatch(loadingToggleAction(true));
-      const beingdispatched = dispatch(
-        signupAction(
-          userName,
-          email,
-          password,
-          contact,
-          referalAddress,
-          navigate
-        )
-      );
+      var oldAddressStatus;
+      if (oldWalletAddress.length === 0) {
+        oldAddressStatus = true;
+      } else {
+        oldAddressStatus = await verifyOldWalletPublicKey();
+      }
 
-      console.log(beingdispatched, "beingdispatched");
+      if (oldAddressStatus) {
+        const beingdispatched = dispatch(
+          signupAction(
+            userName,
+            email,
+            password,
+            contact,
+            referalAddress,
+            oldWalletAddress,
+            navigate
+          )
+        );
+
+        //set loader to false when executed
+      } else {
+        dispatch(loadingToggleAction(false));
+        toast.error("The old Wallet Address You Entered does not exist", {
+          position: "top-center",
+        });
+      }
     } else {
+      dispatch(loadingToggleAction(false));
       toast.error("Please Enter Valid Referal Code", {
         style: { minWidth: 180 },
         position: "top-center",
@@ -118,6 +175,14 @@ function Register(props) {
       error = true;
     }
 
+    if (oldWalletAddress.length !== 42) {
+      if (oldWalletAddress.length !== 0) {
+        errorObj.oldwalletaddress =
+          "if You Dont have Old Wallet Address Please Leave this Field Empty";
+        error = true;
+      }
+    }
+
     setErrors(errorObj);
     if (error) return;
     getReferalBonus();
@@ -126,6 +191,9 @@ function Register(props) {
   return (
     <>
       <Toaster />
+
+      {props.showLoading ? <Loader /> : ""}
+
       <div className="page-wraper">
         <div className="browse-job login-style3">
           <div
@@ -205,6 +273,29 @@ function Register(props) {
                                   {errors.referalAddress && (
                                     <div className="text-danger fs-12">
                                       {errors.referalAddress}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="form-group ">
+                                  <label>
+                                    This Field is Not Required. If you have old
+                                    wallet address of BitXGold Malaysia Please
+                                    Enter Otherwise Leave it Empty :
+                                  </label>
+
+                                  {/* <input name="dzName" required="" className="form-control" placeholder="Email Address" type="text" /> */}
+                                  <input
+                                    value={oldWalletAddress}
+                                    onChange={(e) =>
+                                      setOldWalletAddress(e.target.value)
+                                    }
+                                    className="form-control"
+                                    placeholder="0x0000000000000000000000000000000000000000"
+                                  />
+                                  {errors.oldwalletaddress && (
+                                    <div className="text-danger fs-12">
+                                      {errors.oldwalletaddress}
                                     </div>
                                   )}
                                 </div>

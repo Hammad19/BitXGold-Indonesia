@@ -6,7 +6,8 @@ import bitxGoldSwap from "../../src/contractAbis/BitXGoldSwap.json";
 const axiosInstance = axios.create({
   //baseURL: `https://bright-yak-gabardine.cyclic.app`,
   //baseURL: `https://api.bitx.gold`,
-  baseURL: `https://bitxbackend.herokuapp.com`,
+  //baseURL: `http://localhost:8080`,
+  baseURL: `https://bitxind-7ougt4-microtica.microtica.rocks`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -31,8 +32,6 @@ export async function getDetailsforDashboard(wallet_address) {
     "/api/bonusrefreward/" + wallet_address
   );
 
-  console.log(data7.data, "data7.data");
-
   const data8 = await axiosInstance.get("/api/usdt/" + wallet_address);
   const data9 = await axiosInstance.get("/api/bnb/" + wallet_address);
 
@@ -52,8 +51,6 @@ export async function getDetailsforDashboard(wallet_address) {
     .map((item) => {
       referalbonus = referalbonus + item.reward;
     });
-
-  console.log(data8.data.usdt, "usdt");
 
   return {
     availableBXG: data.bxg,
@@ -113,7 +110,10 @@ export const filterArrayAndReturnTotal = (array, type) => {
   return amount;
 };
 
-export const GetValuesForReferPage = async (walletAddress) => {
+export const GetValuesForReferPage = async (
+  walletAddress,
+  oldWalletAddress
+) => {
   var level1count = 0;
   var level2count = 0;
   var level3count = 0;
@@ -130,8 +130,16 @@ export const GetValuesForReferPage = async (walletAddress) => {
       level3count = level3;
     });
 
+  const oldwallet = await axiosInstance.get(
+    "/api/refer/ow/" + oldWalletAddress
+  );
+
   const { data } = await axiosInstance.get(
     "/api/stakerefreward/" + walletAddress
+  );
+
+  const oldwalletresponse = await axiosInstance.get(
+    "/api/stakerefreward/ow/" + oldWalletAddress
   );
 
   return {
@@ -139,6 +147,10 @@ export const GetValuesForReferPage = async (walletAddress) => {
     level2count,
     level3count,
     referalData: data.filter((item) => item?.type === "claimed"),
+    oldReferalData: oldwalletresponse.data[0].filter(
+      (item) => item?.type === "claimed"
+    ),
+    refers: oldwallet.data,
   };
 };
 
@@ -166,22 +178,42 @@ export const CountLevels = (data, walletAddress) => {
   };
 };
 
-export const GetValuesForBonusPage = async (walletAddress) => {
+export const GetValuesForBonusPage = async (
+  walletAddress,
+  oldWalletAddress
+) => {
   var referCode = "0x0000000000000000000000";
+  let oldReferCode;
   const { data } = await axiosInstance.get(
     "/api/bonusrefreward/" + walletAddress
   );
-  console.log(data);
+
+  const oldwalletresponse = await axiosInstance.get(
+    "/api/bonusrefreward/ow/" + oldWalletAddress
+  );
+
   const isreferedData = await axiosInstance.get(
     "/api/bonusrefer/" + walletAddress
   );
+
+  const isoldreferedData = await axiosInstance.get(
+    "/api/bonusrefer/ow/" + oldWalletAddress
+  );
   if (isreferedData.data.isRefered) {
-    console.log(isreferedData.data.refererUser.wallet_public_key);
+    //console.log(isreferedData.data.refererUser.wallet_public_key);
     referCode = isreferedData.data.refererUser.wallet_public_key;
+  }
+
+  if (isoldreferedData.data[0].isRefered) {
+    //console.log("here");
+    //console.log(isreferedData.data.refererUser.wallet_public_key);
+    oldReferCode = isoldreferedData.data[0].refer_code;
   }
   return {
     referCode,
+    oldReferCode,
     referalData: data,
+    oldReferalData: oldwalletresponse.data[0],
   };
 };
 

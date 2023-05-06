@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ethers } from "ethers/lib";
+
 import swal from "sweetalert";
 import {
   getUserDetailsConfirmedAction,
@@ -7,17 +7,24 @@ import {
   Logout,
 } from "../store/actions/AuthActions";
 
-const baseUrl = "https://bitxbackend.herokuapp.com";
+//const baseUrl = "http://localhost:8080";
 
-//const baseUrl = "https://bright-yak-gabardine.cyclic.app";
+const baseUrl = "https://bitxind-7ougt4-microtica.microtica.rocks";
 
-export function signUp(user_name, email, password, contact) {
+export function signUp(
+  user_name,
+  email,
+  password,
+  contact,
+  old_wallet_public_key
+) {
   //axios call
   const postData = {
     user_name,
     email,
     password,
     contact,
+    old_wallet_public_key,
   };
   return axios.post(`${baseUrl}/api/auth/register`, postData, {
     headers: {

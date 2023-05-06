@@ -1,9 +1,8 @@
 import jwt_decode from "jwt-decode";
-import { useSelector } from "react-redux";
+
 import swal from "sweetalert";
 
 import {
-  formatError,
   getUserDetails,
   isAlreadyReferred,
   login,
@@ -41,18 +40,27 @@ export function signupAction(
   password,
   contact,
   referalAddress,
+  oldWalletAddress,
   navigate
 ) {
   return (dispatch) => {
-    signUp(user_name, email, password, contact)
+    signUp(user_name, email, password, contact, oldWalletAddress)
       .then((response) => {
         //history.push('/dashboard');
 
         if (response.data.status) {
           saveRef(response.data.user_id, referalAddress);
           dispatch(confirmedSignupAction(response.data));
-          navigate("/login");
+          //loadingtoggleaction to false
+          dispatch(loadingToggleAction(false));
+          //swal for signup successfull
+          swal("Success", "Signup Successfully Completed", "success", {
+            button: "Login Now!",
+          }).then(() => {
+            navigate("/login");
+          });
         } else {
+          dispatch(loadingToggleAction(false));
           swal("Oops", response.data.message, "error", {
             button: "Try Again!",
           });
@@ -121,6 +129,7 @@ export function loginAction(email, password, navigate) {
             getUserDetailsAction(tokenDetails, decoded.is_admin, navigate)
           );
         } else {
+          dispatch(loadingToggleAction(false));
           if (response.data.message === "Email is not verified.") {
             navigate("/verification", {
               state: {
@@ -170,6 +179,7 @@ export function getUserDetailsAction(tokenDetails, isAdmin, navigate) {
             const timer = expireDate.getTime() - todaysDate.getTime();
             runLogoutTimer(dispatch, timer, navigate);
             console.log(isAdmin);
+            dispatch(loadingToggleAction(false));
             if (!isAdmin) {
               console.log("here in dashboard");
               navigate("/dashboard");
