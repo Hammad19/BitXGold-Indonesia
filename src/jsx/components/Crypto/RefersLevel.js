@@ -7,7 +7,7 @@ function RefersLevel(props) {
     <Col lg={12}>
       <Card>
         <Card.Header>
-          <Card.Title>{t("refers_by_level")}</Card.Title>
+          <Card.Title>{t(props.headerKey)}</Card.Title>
         </Card.Header>
         <Card.Body>
           <Row className="text-center" lg={4}>

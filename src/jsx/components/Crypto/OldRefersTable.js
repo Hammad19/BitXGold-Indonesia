@@ -1,7 +1,7 @@
 import { Card, Col, Table, Badge } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-function RefersTable(props) {
+function OldRefersTable(props) {
   const getFormattedDate = (date) => {
     //get only day and month in english
     const d = new Date(date);
@@ -32,7 +32,7 @@ function RefersTable(props) {
                 return (
                   <tr>
                     <th>{index + 1}</th>
-                    <td>{item.user.wallet_public_key}</td>
+                    <td>{item.wallet_address}</td>
                     <td>
                       {" "}
                       <Badge bg="" className={"badge-success success"}>
@@ -52,4 +52,4 @@ function RefersTable(props) {
   );
 }
 
-export default RefersTable;
+export default OldRefersTable;

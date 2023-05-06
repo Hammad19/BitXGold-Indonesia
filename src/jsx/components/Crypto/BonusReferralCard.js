@@ -8,7 +8,7 @@ export default function BonusReferralCard(props) {
     <Col lg={12}>
       <Card>
         <Card.Header>
-          <Card.Title>{t("you_are_currently_referred_by")}</Card.Title>
+          <Card.Title>{t(props.headerKey)}</Card.Title>
         </Card.Header>
         <Card.Body>
           <Table responsive>

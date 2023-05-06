@@ -10,6 +10,7 @@ import Loader from "../Loader/Loader";
 import InviteYourContacts from "./InviteYourContacts";
 import RefersLevel from "./RefersLevel";
 import RefersTable from "./RefersTable";
+import OldRefersTable from "./OldRefersTable";
 
 const StakingReferral = () => {
   const { t } = useTranslation();
@@ -24,9 +25,12 @@ const StakingReferral = () => {
 
   const [loader, setLoader] = useState(false);
   const [stakingReferalData, setStakingReferalData] = useState([]);
+  const [oldstakingReferalData, setoldStakingReferalData] = useState([]);
   const [level1count, setLevel1Count] = useState(0);
   const [level2count, setLevel2Count] = useState(0);
   const [level3count, setLevel3Count] = useState(0);
+  const [refers, setRefers] = useState([]);
+  const [referals, setReferals] = useState([]);
 
   //total usdt value
 
@@ -48,13 +52,17 @@ const StakingReferral = () => {
     setLoader(true);
     try {
       const latestResponse = await GetValuesForReferPage(
-        state.auth.userDetails.id
+        state.auth.userDetails.id,
+        state.auth.userDetails.old_wallet_public_key
       );
 
       setLevel1Count(latestResponse.level1count);
       setLevel2Count(latestResponse.level2count);
       setLevel3Count(latestResponse.level3count);
       setStakingReferalData(latestResponse.referalData);
+      setoldStakingReferalData(latestResponse.oldReferalData);
+      setRefers(latestResponse.refers[0]);
+      console.log(latestResponse.refers[0]);
     } catch (err) {
       toast.error(err.message, {
         position: "top-center",
@@ -92,12 +100,35 @@ const StakingReferral = () => {
             referCodeTitle="refer_code_title"
             copyToClipBoard={copyToClipBoard}
           />
+
           <RefersLevel
+            headerKey={"refers_by_level"}
             level1count={level1count}
             level2count={level2count}
             level3count={level3count}
           />
-          <RefersTable stakingReferalData={stakingReferalData} />
+          <RefersTable
+            titleKey={"referred_transaction"}
+            stakingReferalData={stakingReferalData}
+          />
+
+          {state.auth.userDetails.old_wallet_public_key !== "" ? (
+            <>
+              <RefersLevel
+                headerKey={"Referrals In Previous Version"}
+                level1count={refers.refer1}
+                level2count={refers.refer2}
+                level3count={refers.refer3}
+              />
+
+              <OldRefersTable
+                titleKey={"old_referred_transaction"}
+                stakingReferalData={oldstakingReferalData}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       )}
     </>

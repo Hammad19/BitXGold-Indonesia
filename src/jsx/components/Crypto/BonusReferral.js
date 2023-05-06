@@ -8,6 +8,7 @@ import Loader from "../Loader/Loader";
 import InviteYourContacts from "./InviteYourContacts";
 import BonusReferralCard from "./BonusReferralCard";
 import BonusReferralTable from "./BonusReferralTable";
+import OldBonusReferralTable from "./OldBonusReferralTable";
 const BonusReferral = () => {
   const state = useSelector((state) => state);
 
@@ -19,16 +20,22 @@ const BonusReferral = () => {
 
   const [loader, setLoader] = useState(false);
   const [referCode, setReferCode] = useState("0x0000000000000000000000");
+  const [oldReferCode, setOldReferCode] = useState("0x0000000000000000000000");
   const [referralData, setReferralData] = useState([]);
+  const [oldreferralData, setoldReferralData] = useState([]);
 
   const FetchData = async () => {
     setLoader(true);
     try {
+      console.log(state.auth.userDetails.old_wallet_public_key);
       const thisPageData = await GetValuesForBonusPage(
-        state.auth.userDetails.id
+        state.auth.userDetails.id,
+        state.auth.userDetails.old_wallet_public_key
       );
       setReferralData(thisPageData.referalData);
       setReferCode(thisPageData.referCode);
+      setoldReferralData(thisPageData.oldReferalData);
+      setOldReferCode(thisPageData.oldReferCode);
     } catch (err) {
       toast.error("Error Occured", {
         position: "top-center",
@@ -69,10 +76,23 @@ const BonusReferral = () => {
             copyToClipBoard={myFunction}
           />
           <BonusReferralCard
+            headerKey={"you_are_currently_referred_by"}
             walletaddress={state.auth.userDetails.wallet_public_key}
             referCode={referCode}
           />
           <BonusReferralTable referralData={referralData} />
+          {state.auth.userDetails.old_wallet_public_key !== "" ? (
+            <>
+              <BonusReferralCard
+                headerKey={"In Previous Version you were referred By"}
+                walletaddress={state.auth.userDetails.old_wallet_public_key}
+                referCode={oldReferCode}
+              />
+              <OldBonusReferralTable referralData={oldreferralData} />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       )}
     </>
