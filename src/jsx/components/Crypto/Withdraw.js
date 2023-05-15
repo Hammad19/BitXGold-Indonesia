@@ -20,6 +20,11 @@ import { useTranslation } from "react-i18next";
 const Withdraw = () => {
   const [walletAddress, SetWalletAddress] = useState("");
 
+  const { changeBackground } = useContext(ThemeContext);
+  useEffect(() => {
+    changeBackground({ value: "dark", label: "Dark" });
+  }, []);
+
   const FetchData = async () => {
     setloader(true);
     try {

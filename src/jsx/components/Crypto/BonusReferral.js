@@ -37,10 +37,7 @@ const BonusReferral = () => {
       setoldReferralData(thisPageData.oldReferalData);
       setOldReferCode(thisPageData.oldReferCode);
     } catch (err) {
-      toast.error("Error Occured", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
+      console.log(err);
     }
     setLoader(false);
   };
@@ -81,7 +78,11 @@ const BonusReferral = () => {
             referCode={referCode}
           />
           <BonusReferralTable referralData={referralData} />
-          {state.auth.userDetails.old_wallet_public_key !== "" ? (
+          {state.auth.userDetails.old_wallet_public_key === null ||
+          state.auth.userDetails.old_wallet_public_key === undefined ||
+          state.auth.userDetails.old_wallet_public_key === "" ? (
+            <></>
+          ) : (
             <>
               <BonusReferralCard
                 headerKey={"In Previous Version you were referred By"}
@@ -90,8 +91,6 @@ const BonusReferral = () => {
               />
               <OldBonusReferralTable referralData={oldreferralData} />
             </>
-          ) : (
-            <></>
           )}
         </div>
       )}

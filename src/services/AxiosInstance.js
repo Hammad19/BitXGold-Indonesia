@@ -6,8 +6,10 @@ import bitxGoldSwap from "../../src/contractAbis/BitXGoldSwap.json";
 const axiosInstance = axios.create({
   //baseURL: `https://bright-yak-gabardine.cyclic.app`,
   //baseURL: `https://api.bitx.gold`,
-  //baseURL: `http://localhost:8080`,
-  baseURL: `https://bitxind-7ougt4-microtica.microtica.rocks`,
+  baseURL: `http://localhost:8080`,
+  //baseURL: `https://bitxind-7ougt4-microtica.microtica.rocks`,
+
+  //baseURL: `https://bitxgoldbackend-ind-pmgdr57aqq-uc.a.run.app`,
 });
 
 axiosInstance.interceptors.request.use((config) => {

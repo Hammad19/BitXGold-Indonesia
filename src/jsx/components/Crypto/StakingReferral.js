@@ -64,10 +64,7 @@ const StakingReferral = () => {
       setRefers(latestResponse.refers[0]);
       console.log(latestResponse.refers[0]);
     } catch (err) {
-      toast.error(err.message, {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
+      console.log(err);
     }
     setLoader(false);
   };
@@ -112,7 +109,11 @@ const StakingReferral = () => {
             stakingReferalData={stakingReferalData}
           />
 
-          {state.auth.userDetails.old_wallet_public_key !== "" ? (
+          {state.auth.userDetails.old_wallet_public_key === null ||
+          state.auth.userDetails.old_wallet_public_key === undefined ||
+          state.auth.userDetails.old_wallet_public_key === "" ? (
+            <></>
+          ) : (
             <>
               <RefersLevel
                 headerKey={"Referrals In Previous Version"}
@@ -126,8 +127,6 @@ const StakingReferral = () => {
                 stakingReferalData={oldstakingReferalData}
               />
             </>
-          ) : (
-            <></>
           )}
         </div>
       )}

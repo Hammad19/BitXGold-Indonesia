@@ -7,9 +7,9 @@ import {
   Logout,
 } from "../store/actions/AuthActions";
 
-//const baseUrl = "http://localhost:8080";
+const baseUrl = "http://localhost:8080";
 
-const baseUrl = "https://bitxind-7ougt4-microtica.microtica.rocks";
+//const baseUrl = "https://bitxgoldbackend-ind-pmgdr57aqq-uc.a.run.app";
 
 export function signUp(
   user_name,
